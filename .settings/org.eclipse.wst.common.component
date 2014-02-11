@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="Jayjax">
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="jayjax">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/public"/>
-        <property name="context-root" value="Jayjax"/>
+        <property name="context-root" value="jayjax"/>
         <property name="java-output-path" value="/Jayjax/bin"/>
     </wb-module>
 </project-modules>

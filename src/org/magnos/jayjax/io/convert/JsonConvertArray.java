@@ -7,24 +7,24 @@ import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonValue;
 
 
-public class JsonConvertArray<T> implements JsonConverter<T[], JsonArray>
+public class JsonConvertArray<T> implements JsonConverter<T, JsonArray>
 {
 
-    private Class<T> elementType;
-    private JsonConverter<T, JsonValue> elementConverter;
+    private Class<?> elementType;
+    private JsonConverter<Object, JsonValue> elementConverter;
     
-    public JsonConvertArray(Class<T> elementType)
+    public JsonConvertArray(Class<?> elementType)
     {
         this.elementType = elementType;
-        this.elementConverter = JsonConverterFactory.getConverter( elementType );
+        this.elementConverter = JsonConverterFactory.getConverter( (Class<Object>)elementType );
     }
     
     @Override
-    public T[] read( JsonArray value )
+    public T read( JsonArray value )
     {
         int n = value.length();
         
-        T[] elements = (T[])Array.newInstance( elementType, n );
+        Object array = Array.newInstance( elementType, n );
         
         for (int i = 0; i < n; i++)
         {
@@ -32,23 +32,23 @@ public class JsonConvertArray<T> implements JsonConverter<T[], JsonArray>
             
             if (e != null)
             {
-                elements[i] = elementConverter.read( e );
+            	Array.set( array, i, elementConverter.read( e ) );
             }
         }
         
-        return elements;
+        return (T)array;
     }
 
     @Override
-    public JsonArray write( T[] value )
+    public JsonArray write( T value )
     {
-        int n = value.length;
+        int n = Array.getLength( value );
         
         JsonArray array = new JsonArray( new JsonValue[ n ] );
         
         for (int i = 0; i < n; i++)
         {
-            T e = value[i];
+        	Object e = Array.get( value, i );
             
             if (e != null)
             {

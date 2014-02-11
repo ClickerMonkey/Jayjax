@@ -1,11 +1,42 @@
 <html>
     <head>
+        <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+        <script src="/jayjax/js/UserController"></script>
     </head>
     <body>
-        <form action="/jayjax/custom" method="post" enctype="multipart/form-data">
-            <input type="text" name="description" />
-            <input type="file" name="file" />
-            <input type="submit" />
+        <form action="/jayjax/jj/user/profile/picture" method="post" enctype="multipart/form-data">
+          <input type="file" name="uploadedFile" />
+          <input type="text" name="description" />
+          <input type="text" name="tags" />
+          <input type="text" name="names[0]" />
+          <input type="text" name="names[1]" />
+          <input type="text" name="names[2]" />
+          <input type="submit" />
         </form>
+        
+        <div>
+          <script>
+          function getUser() {
+        	 var uid = $('#userid').val();
+        	 
+        	 UserController.getUser(uid, {
+        		 success: function (data) {
+                     console.log(data);
+                 }
+        	 });
+          }
+          
+          function complexMethod() {
+        	  UserController.complexMethod(['x','y','z'], {id:3, name:'freaklotr4'}, true, {
+        		  success: function (data) {
+                      console.log(data);
+                  }
+        	  });
+          }
+          </script>
+          <input type="text" name="id" id="userid" />  
+          <button type="button" onclick="getUser()">Get User</button>
+          <button type="button" onclick="complexMethod()">Complex Method</button>
+        </div>
     </body>
 </html>

@@ -1,48 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jayjax>
-
-    <!-- EXAMPLE:
-    public class UserController extends Controller 
-    {
-        public User getUser(long id) {
-            // ...
-        }
-        
-        public UploadResult setProfilePicture(Part uploadedFile, String description, String tags, String[] names) {
-            // ...
-        }
-    }
-     -->
-
-    <controller class="org.magnos.jayjax.UserController" name="user">
-    
-        <!-- USAGE:
-         GET /user/2387
-         
-         // JavaScript
-         user.getUser(2387, function(u) {
-           if (u != null) {
-             alert( u.name + ' was found!' );
-           } 
-         });
-         -->
-    
-        <controller-method action="/user/{id}" method="GET" invoke="getUser(id)" />
-        
-        <!-- USAGE:
-        <form action="/user/profile/picture" method="post" enctype="multipart/form-data">
-          <input type="file" name="uploadedFile" />
-          <input type="text" name="description" />
-          <input type="text" name="tags" />
-          <input type="text" name="names[0]" />
-          <input type="text" name="names[1]" />
-          <input type="text" name="names[2]" />
-          <input type="submit" />
-        </form>
-         -->
-        
-        <controller-method action="/user/profile/picture" method="POST" invoke="setProfilePicture(uploadedFile, description, tags, names)" />
-        
+    <controller class="org.magnos.jayjax.UserController" name="UserController" javascript="true">
+        <function action="/user/(\d+)" method="GET" invoke="getUser(#1)" />
+        <function action="/user/profile/picture" method="POST" invoke="setProfilePicture(uploadedFile, description, tags, names)" />
+        <function action="/user/complex" method="POST" invoke="complexMethod(words,user,flag)" />
     </controller>
-    
 </jayjax>

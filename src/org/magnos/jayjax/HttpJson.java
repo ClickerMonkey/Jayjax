@@ -10,13 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.magnos.jayjax.io.CharacterReader;
 import org.magnos.jayjax.io.CharacterSet;
+import org.magnos.jayjax.json.Json;
 import org.magnos.jayjax.json.JsonArray;
-import org.magnos.jayjax.json.JsonBoolean;
-import org.magnos.jayjax.json.JsonNumber;
 import org.magnos.jayjax.json.JsonObject;
-import org.magnos.jayjax.json.JsonString;
 import org.magnos.jayjax.json.JsonValue;
-import org.magnos.jayjax.json.JsonWriter;
 
 
 public class HttpJson
@@ -38,7 +35,7 @@ public class HttpJson
         return json;
     }
     
-    private static void populateJsonValue(JsonValue destination, String name, String ... values) throws IOException
+    protected static void populateJsonValue(JsonValue destination, String name, String ... values) throws IOException
     {
         CharacterReader reader = new CharacterReader( new StringReader( name ) );
         
@@ -62,7 +59,7 @@ public class HttpJson
             case Array:
                 arr = (JsonArray)destination;
                 for (String v : values) {
-                    arr.set( arrayIndex++, fromString( v ) );
+                    arr.set( arrayIndex++, Json.valueOf( v ) );
                 }
                 break;
             // the parent value is an object, set the property to the one 
@@ -71,11 +68,11 @@ public class HttpJson
             case Object:
                 obj = (JsonObject)destination;
                 if (values.length == 1) {
-                    obj.set( property, fromString( values[0] ) );
+                    obj.set( property, Json.valueOf( values[0] ) );
                 } else if (values.length > 1) {
                     arr = new JsonArray();
                     for (String v : values) {
-                        arr.set( arrayIndex++, fromString( v ) );
+                        arr.set( arrayIndex++, Json.valueOf( v ) );
                     }
                     obj.set( property, arr );
                 }
@@ -138,7 +135,7 @@ public class HttpJson
                 {
                 case Object:
                     obj = (JsonObject)destination;
-                    subobj = (JsonObject)obj.getValue( key );
+                    subobj = (JsonObject)obj.getValue( property );
                     if (subobj == null) {
                         subobj = new JsonObject();
                         obj.set( property, subobj );
@@ -169,7 +166,6 @@ public class HttpJson
                 
             case Array:
                 arr = (JsonArray)destination;
-                subobj = null;
                 if (arrayIndex >= arr.length()) {
                     subobj = new JsonObject();
                     arr.set( arrayIndex, subobj );
@@ -192,56 +188,4 @@ public class HttpJson
         return destination;
     }
     
-    private static JsonValue fromString(String x)
-    {
-        JsonValue value = JsonBoolean.fromString( x );
-        
-        if (value == null)
-        {
-            value = JsonNumber.fromString( x );
-            
-            if (value == null)
-            {
-                value = new JsonString( x );
-            }
-        }
-        
-        return value;
-    }
-    
-    public static void main(String[] args) throws IOException
-    {
-        JsonValue json = new JsonObject();
-        populateJsonValue(json, "name1", "1");
-        populateJsonValue(json, "name2[]", "2");
-        populateJsonValue(json, "name3[meow]", "3");
-        populateJsonValue(json, "name4[1]", "4");
-        populateJsonValue(json, "name4[5]", "4.5");
-        populateJsonValue(json, "name5.hello", "5");
-        populateJsonValue(json, "name6.hello.world", "6");
-        populateJsonValue(json, "contact[0].firstName","Philip");
-        populateJsonValue(json, "contact[0].lastName", "Diffenderfer");
-        populateJsonValue(json, "contact[1].firstName", "John");
-        populateJsonValue(json, "contact[1].lastName", "Doe");
-        populateJsonValue(json, "contact[0].movies[]", "Fellowship of The Ring");
-        populateJsonValue(json, "contact[0].movies[]", "Two Towers");
-        populateJsonValue(json, "contact[0].children[0].name", "Connor");
-        populateJsonValue(json, "contact[0].children[0].age", "3");
-        populateJsonValue(json, "contact[0].children[1].name", "Mackenzie");
-        populateJsonValue(json, "contact[0].children[1].age", "4");
-        
-        StringBuilder out = new StringBuilder();
-        JsonWriter writer = JsonWriter.forAppender( out );
-        writer.setIndent( true );
-        writer.setIndentation( "  " );
-        writer.setNewlineArrayStart( false );
-        writer.setNewlineMemberSeparator( true );
-        writer.setNewlineObjectStart( true );
-        writer.setNewlineObjectEnd( true );
-        writer.setStringsQuoted( false );
-        json.write( writer );
-        
-        System.out.println( out );
-    }
-
 }

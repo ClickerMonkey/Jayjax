@@ -63,7 +63,7 @@ public class JsonConverterFactory
             }
             else if (type.isArray())
             {
-                converter = new JsonConvertArray( type );
+                converter = new JsonConvertArray( type.getComponentType() );
             }
             else if (!type.isAnnotation() && !type.isInterface())
             {
