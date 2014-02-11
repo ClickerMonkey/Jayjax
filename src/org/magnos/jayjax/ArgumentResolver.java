@@ -1,11 +1,10 @@
 
-package org.magnos.jayjax.io;
+package org.magnos.jayjax;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 
-import org.magnos.jayjax.Invocation;
 
 
 public abstract class ArgumentResolver
@@ -27,4 +26,9 @@ public abstract class ArgumentResolver
 		return name;
 	}
 
+    public Class<?> getType()
+    {
+        return type;
+    }
+	
 }

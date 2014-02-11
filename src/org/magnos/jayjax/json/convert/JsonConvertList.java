@@ -1,4 +1,4 @@
-package org.magnos.jayjax.io.convert;
+package org.magnos.jayjax.json.convert;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonValue;
 
 
-public class JsonConvertList implements JsonConverter<List<Object>, JsonArray>
+public class JsonConvertList extends JsonConverter<List<Object>, JsonArray>
 {
     
     private static final JsonConvertList INSTANCE = new JsonConvertList();

@@ -68,10 +68,10 @@ public class JsonFormat
 
 	public JsonValue readValueFromStream( Reader reader ) throws IOException
 	{
-		return readValue( new CharacterReader( reader ), true );
+		return readValue( new CharacterReader( reader ), true, true );
 	}
 
-	private JsonValue readValue( CharacterReader in, boolean readNext ) throws IOException
+	private JsonValue readValue( CharacterReader in, boolean readNext, boolean root ) throws IOException
 	{
 		if (readNext)
 		{
@@ -90,7 +90,7 @@ public class JsonFormat
 			return new JsonString( in.readUntil( Json.SET_STRING_STOP, false, true, false ) );
 		}
 
-		String valueString = in.readUntil( Json.SET_CONSTANT_STOP, true, true, true );
+		String valueString = root ? in.consume() : in.readUntil( Json.SET_CONSTANT_STOP, true, true, true );
 
 		if (valueString.equals( Json.NULL ))
 		{
@@ -123,7 +123,7 @@ public class JsonFormat
 				continue;
 			}
 
-			valueList.add( readValue( in, false ) );
+			valueList.add( readValue( in, false, false ) );
 		}
 
 		return new JsonArray( valueList );
@@ -164,7 +164,7 @@ public class JsonFormat
 				throw new IOException( "Expected member separator ':'" + in.getCursor() );
 			}
 
-			JsonValue value = readValue( in, true );
+			JsonValue value = readValue( in, true, false );
 
 			object.set( name, value );
 		}

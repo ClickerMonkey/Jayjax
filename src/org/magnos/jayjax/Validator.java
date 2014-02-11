@@ -1,7 +1,8 @@
-package org.magnos.jayjax;
 
+package org.magnos.jayjax;
 
 public interface Validator
 {
-    public boolean isValid(Invocation call);
+
+    public boolean isValid( Invocation invocation );
 }

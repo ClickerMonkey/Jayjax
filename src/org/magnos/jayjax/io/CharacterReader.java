@@ -48,6 +48,7 @@ public class CharacterReader
 	public static final CharacterSet SET_HEX = new CharacterSet( new char[][] { { '0', '9' }, { 'a', 'f' }, { 'A', 'F' } } );
 
 	public Reader in;
+	public StringBuilder read;
 	public int data;
 	public int line;
 	public int character;
@@ -63,6 +64,7 @@ public class CharacterReader
 	public CharacterReader( Reader in )
 	{
 		this.in = in;
+		this.read = new StringBuilder();
 	}
 
 	/**
@@ -267,6 +269,11 @@ public class CharacterReader
 		{
 			column++;
 		}
+		
+		if (data != NO_DATA)
+		{
+		    read.append( (char)data );
+		}
 
 		return data;
 	}
@@ -286,6 +293,11 @@ public class CharacterReader
 		{
 			column--;
 			character--;
+		}
+		
+		if (data != NO_DATA)
+		{
+		    read.setLength( read.length() - 1 );
 		}
 	}
 
@@ -323,6 +335,13 @@ public class CharacterReader
 		}
 
 		return NO_DATA;
+	}
+	
+	public String consume() throws IOException
+	{
+	    while (readData() != NO_DATA);
+	    
+	    return read.toString();
 	}
 
 }

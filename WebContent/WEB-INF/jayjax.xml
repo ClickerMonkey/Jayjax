@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jayjax>
-    <controller class="org.magnos.jayjax.UserController" name="UserController" javascript="true">
-        <function action="/user/(\d+)" method="GET" invoke="getUser(#1)" />
-        <function action="/user/profile/picture" method="POST" invoke="setProfilePicture(uploadedFile, description, tags, names)" />
-        <function action="/user/complex" method="POST" invoke="complexMethod(words,user,flag)" />
+    <controller class="org.magnos.jayjax.TestController" name="Test" javascript="true">
+        <function action="/test/testString" method="POST" invoke="testString(a,b,c,d,e,f)" />
+        <function action="/test/testEnum" method="POST" invoke="testEnum(a,b,c,d,e)" />
+        <function action="/test/testByte" method="POST" invoke="testByte(a,b,c,d,e,f,g,h)" />
+        <function action="/test/testShort" method="POST" invoke="testShort(a,b,c,d,e,f,g,h)" />
+        <function action="/test/testInt" method="POST" invoke="testInt(a,b,c,d,e,f,g,h)" />
+        <function action="/test/testLong" method="POST" invoke="testLong(a,b,c,d,e,f,g,h)" />
+        <function action="/test/testBoolean" method="POST" invoke="testBoolean(a,b,e,f,g,h)" />
+        <function action="/test/testChar" method="POST" invoke="testChar(a,b,c,d,e,f,g,h)" />
+        <function action="/test/testFloat" method="POST" invoke="testFloat(a,b,c,d,e,f,g,h)" />
+        <function action="/test/testDouble" method="POST" invoke="testDouble(a,b,c,d,e,f,g,h)" />
+        <function action="/test/testAddContacts" method="POST" invoke="testAddContacts(contact)" />
+        <function action="/test/testGetContact" method="POST" invoke="testGetContact(fullName,phoneNumber,houseNumber,street,city,state,zip)" />
+        <function action="/test/testSingleUpload" method="POST" invoke="testSingleUpload(uploadedFile)" />
+        <function action="/test/testMultipleUpload" method="POST" invoke="testMultipleUpload(uploadedFile)" />
+        <function action="/test/testSessionVariable" method="POST" invoke="testSessionVariable($session[message])" />
+        <function action="/test/testURL/(\d+)/([^/]+)/(true|false)" method="GET|POST" invoke="testURL(#1,#2,#3)" />
     </controller>
 </jayjax>

@@ -1,5 +1,5 @@
 
-package org.magnos.jayjax.io.convert;
+package org.magnos.jayjax.json.convert;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -12,7 +12,7 @@ import org.magnos.jayjax.json.JsonObject;
 import org.magnos.jayjax.json.JsonValue;
 
 
-public class JsonConvertObject<T> implements JsonConverter<T, JsonObject>
+public class JsonConvertObject<T> extends JsonConverter<T, JsonObject>
 {
 
     private static final Class<?>[] NO_PARAMETERS = {};
@@ -35,7 +35,7 @@ public class JsonConvertObject<T> implements JsonConverter<T, JsonObject>
             throw new RuntimeException( e );
         }
     }
-
+    
     @Override
     public T read( JsonObject value )
     {

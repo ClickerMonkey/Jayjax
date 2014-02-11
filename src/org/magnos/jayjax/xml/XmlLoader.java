@@ -5,19 +5,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.Part;
 
+import org.magnos.jayjax.ArgumentResolver;
 import org.magnos.jayjax.Controller;
 import org.magnos.jayjax.ControllerScope;
 import org.magnos.jayjax.Function;
-import org.magnos.jayjax.JayJax;
-import org.magnos.jayjax.io.ArgumentResolver;
-import org.magnos.jayjax.io.resolve.ActionResolver;
-import org.magnos.jayjax.io.resolve.FileResolver;
-import org.magnos.jayjax.io.resolve.ParameterResolver;
+import org.magnos.jayjax.Jayjax;
+import org.magnos.jayjax.Validator;
+import org.magnos.jayjax.resolve.ActionResolver;
+import org.magnos.jayjax.resolve.ParameterResolver;
+import org.magnos.jayjax.resolve.PartArrayResolver;
+import org.magnos.jayjax.resolve.PartResolver;
+import org.magnos.jayjax.resolve.VariableResolver;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -25,6 +30,7 @@ public class XmlLoader
 {
 
 	private static final String TAG_JAYJAX = "jayjax";
+	private static final String TAG_VALIDATOR = "validator";
 	private static final String TAG_CONTROLLER = "controller";
 	private static final String TAG_FUNCTION = "function";
 
@@ -42,14 +48,19 @@ public class XmlLoader
 		}
 
 		XmlIterator<Element> children = new XmlIterator<Element>( root );
-
+		Map<String, Validator> validatorMap = new HashMap<String, Validator>();
+		
 		for (Element e : children)
 		{
 			String tag = e.getTagName().toLowerCase();
 
 			if (tag.equals( TAG_CONTROLLER ))
 			{
-				loadController( e );
+				loadController( e, validatorMap );
+			}
+			else if (tag.equals( TAG_VALIDATOR ))
+			{
+			    loadValidator( e, validatorMap );
 			}
 			else
 			{
@@ -58,7 +69,7 @@ public class XmlLoader
 		}
 	}
 
-	private static void loadController( Element e ) throws NoSuchMethodException, SecurityException, ClassNotFoundException
+	private static void loadController( Element e, Map<String, Validator> validatorMap ) throws NoSuchMethodException, SecurityException, ClassNotFoundException
 	{
 		Controller controller = new Controller();
 		controller.setName( Xml.getAttribute( e, "name", null, true ) );
@@ -76,7 +87,7 @@ public class XmlLoader
 
 			if (tag.equals( TAG_FUNCTION ))
 			{
-				controller.getFunctions().add( loadFunction( child, controller ) );
+				controller.getFunctions().add( loadFunction( child, controller, validatorMap ) );
 			}
 			else
 			{
@@ -84,25 +95,49 @@ public class XmlLoader
 			}
 		}
 
-		JayJax.addController( controller );
+		Jayjax.addController( controller );
 	}
 
-	private static Function loadFunction( Element e, Controller controller )
+	private static Function loadFunction( Element e, Controller controller, Map<String, Validator> validatorMap )
 	{
 		Function f = new Function();
 
 		f.setController( controller );
+		
+		// Action
 		f.setGivenAction( Xml.getAttribute( e, "action", null, true ) );
 		f.setAction( Pattern.compile( f.getGivenAction() ) );
 
+		// Method
 		f.setGivenMethod( Xml.getAttribute( e, "method", null, true ) );
 		f.setRequestMethods(
 			(f.getGivenMethod().contains( "GET" ) ? Function.REQUEST_METHOD_GET : 0) |
-				(f.getGivenMethod().contains( "POST" ) ? Function.REQUEST_METHOD_POST : 0)
-			);
+			(f.getGivenMethod().contains( "POST" ) ? Function.REQUEST_METHOD_POST : 0)
+		);
 
+		// Secure
 		f.setSecure( Xml.getBooleanAttribute( e, "secure", false, true ) );
+		
+		// Javascript
+		f.setJavascript( Xml.getBooleanAttribute( e, "javascript", true, true ) );
+		
+		// Validator
+		String validatorName = Xml.getAttribute( e, "validator", null, false );
+		
+		if (validatorName != null) 
+		{
+		    Validator validator = validatorMap.get( validatorName );
+		    
+		    if (validator == null) 
+		    {
+		        throw new RuntimeException( "Validator with name " + validatorName + " was not found!" );
+		    }
+		    
+		    f.setGivenValidator( validatorName );
+		    f.setValidator( validator );
+		}
 
+		// Invoke, Method, Parameters, & Resolvers
 		String invokeString = Xml.getAttribute( e, "invoke", null, true );
 		Matcher invokeMatcher = PATTERN_INVOKE.matcher( invokeString );
 
@@ -126,11 +161,19 @@ public class XmlLoader
 			{
 				resolvers[i] = new ActionResolver( name, type, Integer.valueOf( name.substring( 1 ) ) );
 			}
+			else if (name.startsWith( "$" ))
+			{
+			    resolvers[i] = VariableResolver.getResolver( name, type );
+			}
 			else
 			{
 				if (type == Part.class)
 				{
-					resolvers[i] = new FileResolver( name, type );
+					resolvers[i] = new PartResolver( name, type );
+				}
+				else if (type == Part[].class)
+				{
+				    resolvers[i] = new PartArrayResolver( name, type );
 				}
 				else
 				{
@@ -141,7 +184,6 @@ public class XmlLoader
 
 		f.setGivenInvoke( invokeString );
 		f.setMethod( method );
-		f.setParameters( parameters );
 		f.setResolvers( resolvers );
 
 		return f;
@@ -158,6 +200,23 @@ public class XmlLoader
 		}
 
 		return null;
+	}
+	
+	private static void loadValidator( Element e, Map<String, Validator> validatorMap )
+	{
+	    String name = Xml.getAttribute( e, "name", null, true );
+	    String className = Xml.getAttribute( e, "class", null, true );
+	    
+	    try
+	    {
+	        Validator validator = (Validator)Class.forName( className ).newInstance();
+	        
+	        validatorMap.put( name, validator );
+	    }
+	    catch (Exception ex)
+	    {
+	        throw new RuntimeException( ex );
+	    }
 	}
 
 }

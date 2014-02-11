@@ -1,42 +1,327 @@
 <html>
     <head>
-        <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-        <script src="/jayjax/js/UserController"></script>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+        <style>
+            input[type="text"] {
+                width: 80px !important;
+            }        
+            iframe {
+                width: 80px;
+                height: 40px;
+                float: right;
+                border: 1px solid #999;
+            } 
+            .alert {
+                width: 20%;
+                display: inline-block;
+            }
+        </style>
     </head>
     <body>
-        <form action="/jayjax/jj/user/profile/picture" method="post" enctype="multipart/form-data">
-          <input type="file" name="uploadedFile" />
-          <input type="text" name="description" />
-          <input type="text" name="tags" />
-          <input type="text" name="names[0]" />
-          <input type="text" name="names[1]" />
-          <input type="text" name="names[2]" />
-          <input type="submit" />
-        </form>
-        
-        <div>
-          <script>
-          function getUser() {
-        	 var uid = $('#userid').val();
-        	 
-        	 UserController.getUser(uid, {
-        		 success: function (data) {
-                     console.log(data);
-                 }
-        	 });
-          }
-          
-          function complexMethod() {
-        	  UserController.complexMethod(['x','y','z'], {id:3, name:'freaklotr4'}, true, {
-        		  success: function (data) {
-                      console.log(data);
-                  }
-        	  });
-          }
-          </script>
-          <input type="text" name="id" id="userid" />  
-          <button type="button" onclick="getUser()">Get User</button>
-          <button type="button" onclick="complexMethod()">Complex Method</button>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h1>Test JavaScript</h1>
+                </div>
+            </div>
+            <div class="row" id="result">
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-center" style="padding:20px;">
+                    <button type="button" class="btn btn-success" onclick="runTest()">
+                        Execute Test
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h1>Test Form Submit</h1>
+                </div>
+            </div>
+            <!-- testString -->
+            <div class="row">
+                <iframe name="testString_result"></iframe>
+                <form action="/jayjax/jj/test/testString" method="POST" target="testString_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testString</button>
+                  a: <input type="text" class="form-control" name="a" value="Hello World!">    
+                  b: <input type="text" class="form-control" name="b" value>    
+                  c: <input type="text" class="form-control" name="c" value="">    
+                  d[0]: <input type="text" class="form-control" name="d" value="a">
+                  d[1]: <input type="text" class="form-control" name="d" value="b">
+                  d[2]: <input type="text" class="form-control" name="d" value="c">    
+                  f: <input type="text" class="form-control" name="f" value="">    
+                </form>
+            </div>
+            <!-- testEnum -->
+            <div class="row">
+                <iframe name="testEnum_result"></iframe>
+                <form action="/jayjax/jj/test/testEnum" method="POST" target="testEnum_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testEnum</button>
+                  a: <input type="text" class="form-control" name="a" value="APPLICATION">    
+                  b: <input type="text" class="form-control" name="b" value>    
+                  c[0]: <input type="text" class="form-control" name="c" value="REQUEST">
+                  c[1]: <input type="text" class="form-control" name="c" value="SESSION">
+                  e: <input type="text" class="form-control" name="e" value="">
+                </form>
+            </div>
+            <!-- testByte -->
+            <div class="row">
+                <iframe name="testByte_result"></iframe>
+                <form action="/jayjax/jj/test/testByte" method="POST" target="testByte_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testByte</button>
+                  a: <input type="text" class="form-control" name="a" value="-128">    
+                  b: <input type="text" class="form-control" name="b" value="127">    
+                  c: <input type="text" class="form-control" name="c" value="0">
+                  d: <input type="text" class="form-control" name="d" value="45">
+                  e: <input type="text" class="form-control" name="e" value>
+                  f[0]: <input type="text" class="form-control" name="f" value="1">
+                  f[1]: <input type="text" class="form-control" name="f" value="2">
+                  f[2]: <input type="text" class="form-control" name="f" value="3">
+                  h: <input type="text" class="form-control" name="h" value>
+                </form>
+            </div>
+            <!-- testShort -->
+            <div class="row">
+                <iframe name="testShort_result"></iframe>
+                <form action="/jayjax/jj/test/testShort" method="POST" target="testShort_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testShort</button>
+                  a: <input type="text" class="form-control" name="a" value="-32768">    
+                  b: <input type="text" class="form-control" name="b" value="32767">    
+                  c: <input type="text" class="form-control" name="c" value="0">
+                  d: <input type="text" class="form-control" name="d" value="45">
+                  e: <input type="text" class="form-control" name="e" value>
+                  f[0]: <input type="text" class="form-control" name="f" value="1">
+                  f[1]: <input type="text" class="form-control" name="f" value="2">
+                  f[2]: <input type="text" class="form-control" name="f" value="3">
+                  h: <input type="text" class="form-control" name="h" value>
+                </form>
+            </div>
+            <!-- testInt -->
+            <div class="row">
+                <iframe name="testInt_result"></iframe>
+                <form action="/jayjax/jj/test/testInt" method="POST" target="testInt_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testInt</button>
+                  a: <input type="text" class="form-control" name="a" value="-2147483648">    
+                  b: <input type="text" class="form-control" name="b" value="2147483647">    
+                  c: <input type="text" class="form-control" name="c" value="0">
+                  d: <input type="text" class="form-control" name="d" value="45">
+                  e: <input type="text" class="form-control" name="e" value>
+                  f[0]: <input type="text" class="form-control" name="f" value="1">
+                  f[1]: <input type="text" class="form-control" name="f" value="2">
+                  f[2]: <input type="text" class="form-control" name="f" value="3">
+                  h: <input type="text" class="form-control" name="h" value>
+                </form>
+            </div>
+            <!-- testLong -->
+            <div class="row">
+                <iframe name="testLong_result"></iframe>
+                <form action="/jayjax/jj/test/testLong" method="POST" target="testLong_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testLong</button>
+                  a: <input type="text" class="form-control" name="a" value="-2147483649">    
+                  b: <input type="text" class="form-control" name="b" value="2147483648">    
+                  c: <input type="text" class="form-control" name="c" value="0">
+                  d: <input type="text" class="form-control" name="d" value="45">
+                  e: <input type="text" class="form-control" name="e" value>
+                  f[0]: <input type="text" class="form-control" name="f" value="1">
+                  f[1]: <input type="text" class="form-control" name="f" value="2">
+                  f[2]: <input type="text" class="form-control" name="f" value="3">
+                  h: <input type="text" class="form-control" name="h" value>
+                </form>
+            </div>
+            <!-- testBoolean -->
+            <div class="row">
+                <iframe name="testBoolean_result"></iframe>
+                <form action="/jayjax/jj/test/testBoolean" method="POST" target="testBoolean_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testBoolean</button>
+                  a: <input type="text" class="form-control" name="a" value="true">    
+                  b: <input type="text" class="form-control" name="b" value="false">    
+                  e: <input type="text" class="form-control" name="e" value>
+                  f[0]: <input type="text" class="form-control" name="f" value="true">
+                  f[1]: <input type="text" class="form-control" name="f" value="false">
+                  f[2]: <input type="text" class="form-control" name="f" value="true">
+                  h: <input type="text" class="form-control" name="h" value>
+                </form>
+            </div>
+            <!-- testChar -->
+            <div class="row">
+                <iframe name="testChar_result"></iframe>
+                <form action="/jayjax/jj/test/testChar" method="POST" target="testChar_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testChar</button>
+                  a: <input type="text" class="form-control" name="a" value="0">    
+                  b: <input type="text" class="form-control" name="b" value="65535">
+                  c: <input type="text" class="form-control" name="c" value="a">
+                  d: <input type="text" class="form-control" name="d" value="b">    
+                  e: <input type="text" class="form-control" name="e" value>
+                  f[0]: <input type="text" class="form-control" name="f" value="1">
+                  f[1]: <input type="text" class="form-control" name="f" value="2">
+                  f[2]: <input type="text" class="form-control" name="f" value="3">
+                  h: <input type="text" class="form-control" name="h" value>
+                </form>
+            </div>
+            <!-- testFloat -->
+            <div class="row">
+                <iframe name="testFloat_result"></iframe>
+                <form action="/jayjax/jj/test/testFloat" method="POST" target="testFloat_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testFloat</button>
+                  a: <input type="text" class="form-control" name="a" value="0.125">    
+                  b: <input type="text" class="form-control" name="b" value="-0.125">
+                  c: <input type="text" class="form-control" name="c" value="345.04296875">
+                  d: <input type="text" class="form-control" name="d" value="-345.04296875">    
+                  e: <input type="text" class="form-control" name="e" value>
+                  f[0]: <input type="text" class="form-control" name="f" value="0.5">
+                  f[1]: <input type="text" class="form-control" name="f" value="0.25">
+                  f[2]: <input type="text" class="form-control" name="f" value="0.125">
+                  h: <input type="text" class="form-control" name="h" value>
+                </form>
+            </div>
+            <!-- testDouble -->
+            <div class="row">
+                <iframe name="testDouble_result"></iframe>
+                <form action="/jayjax/jj/test/testDouble" method="POST" target="testDouble_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testDouble</button>
+                  a: <input type="text" class="form-control" name="a" value="0.125">    
+                  b: <input type="text" class="form-control" name="b" value="-0.125">
+                  c: <input type="text" class="form-control" name="c" value="345.04296875">
+                  d: <input type="text" class="form-control" name="d" value="-345.04296875">    
+                  e: <input type="text" class="form-control" name="e" value>
+                  f[0]: <input type="text" class="form-control" name="f" value="0.5">
+                  f[1]: <input type="text" class="form-control" name="f" value="0.25">
+                  f[2]: <input type="text" class="form-control" name="f" value="0.125">
+                  h: <input type="text" class="form-control" name="h" value>
+                </form>
+            </div>
+            <!-- testAddContacts -->
+            <div class="row">
+                <iframe name="testAddContacts_result"></iframe>
+                <form action="/jayjax/jj/test/testAddContacts" method="POST" target="testAddContacts_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testAddContacts</button>
+                  fullName:    <input type="text" class="form-control" name="contact[0].fullName" value="Philip Diffenderfer" />
+                  houseNumber: <input type="text" class="form-control" name="contact[0].address.houseNumber" value="12" />
+                  fullName:    <input type="text" class="form-control" name="contact[1].fullName" value="John Smith" />
+                  houseNumber: <input type="text" class="form-control" name="contact[1].address.houseNumber" value="34" />
+                </form>
+            </div>
+            <!-- testGetContact -->
+            <div class="row">
+                <form action="/jayjax/jj/test/testGetContact" method="POST" target="testGetContact_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testGetContact</button>
+                  name: <input type="text" class="form-control" name="fullName" value="John Smith" />
+                  phone#: <input type="text" class="form-control" name="phoneNumber" value="(123) 456-7890" />
+                  house#: <input type="text" class="form-control" name="houseNumber" value="123" />
+                  street: <input type="text" class="form-control" name="street" value="579 Simple Street" />
+                  city: <input type="text" class="form-control" name="city" value="Main City" />
+                  state: <input type="text" class="form-control" name="state" value="AR" />
+                  zip: <input type="text" class="form-control" name="zip" value="17555" />
+                </form>
+            </div>
+            <div class="row">
+                <iframe name="testGetContact_result" style="width:100%; height:60px; margin:20px;"></iframe>
+            </div>
+            <!-- testSingleUpload -->
+            <div class="row">
+                 <form action="/jayjax/jj/test/testSingleUpload" method="POST" target="testSingleUpload_result" class="form-inline" enctype="multipart/form-data">
+                   <button type="submit" class="btn btn-default">testSingleUpload</button>
+                   uploadedFile: <input type="file" class="form-control" name="uploadedFile">  
+                 </form>
+            </div>
+            <div class="row">
+                 <iframe name="testSingleUpload_result" style="width:100%; height:180px; margin:20px;"></iframe>
+            </div>
+            <!-- testMultipleUpload -->
+            <div class="row">
+                 <form action="/jayjax/jj/test/testMultipleUpload" method="POST" target="testMultipleUpload_result" class="form-inline" enctype="multipart/form-data">
+                   <button type="submit" class="btn btn-default">testMultipleUpload</button>
+                   <div>uploadedFile[]: <input type="file" class="form-control" name="uploadedFile[]"></div>
+                   <div>uploadedFile[]: <input type="file" class="form-control" name="uploadedFile[]"></div>
+                   <div>uploadedFile[]: <input type="file" class="form-control" name="uploadedFile[]"></div>
+                 </form>
+            </div>
+            <div class="row">
+                 <iframe name="testMultipleUpload_result" style="width:100%; height:180px; margin:20px;"></iframe>
+            </div>
+            <!-- testSessionVariable -->
+            <div class="row">
+                <iframe name="testSessionVariable_result"></iframe>
+                <form action="/jayjax/jj/test/testSessionVariable" method="POST" target="testSessionVariable_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testSessionVariable</button>
+                </form>
+            </div>
+            <!-- testURL -->
+            <div class="row">
+                <iframe name="testURL_result"></iframe>
+                <form action="/jayjax/jj/test/testURL" method="GET" target="testURL_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testURL</button>
+                  id: <input type="text" class="form-control" name="#1" value="3452">  
+                  message: <input type="text" class="form-control" name="#2" value="Hello World">
+                  flag: <input type="text" class="form-control" name="#3" value="true">
+                </form>
+            </div>
         </div>
+        
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <script src="/jayjax/js/Test"></script>
+        
+        <script>
+        
+        function alert(classes, tag, testName, data) {
+        	return '<div class="alert '+classes+'"><strong>'+tag+'</strong> <u>'+testName+'</u> '+"'"+data+"'"+'</div>';
+        }
+        
+        function handleTest(testName, appendTo, expected) {
+            return {
+                success: function(data,status,xhr) {
+                    if (data == expected) {
+                        appendTo.append(alert('alert-success', 'PASS', testName, data));
+                    } else {
+                    	appendTo.append(alert('alert-danger', 'FAIL', testName, data));
+                    }
+                },
+                error: function(xhr,status,errorThrown) {
+                	appendTo.append(alert('alert-warning', 'ERROR', testName, status));
+                }
+            };
+        }
+        
+        function runTest() {
+            var results = $('#result');
+            results.empty();
+            Test.testString('Hello World!', null, '', ['a', 'b', 'c'], [], null, handleTest('testString',results,true));
+            Test.testEnum('APPLICATION', null, ['REQUEST','SESSION'], [], null, handleTest('testEnum',results,true));
+            Test.testByte(-128, 127, 0, 45, null, [1,2,3], [], null, handleTest('testByte',results,true));
+            Test.testShort(-32768, 32767, 0, 45, null, [1,2,3], [], null, handleTest('testShort',results,true));
+            Test.testInt(-2147483648, 2147483647, 0, 45, null, [1,2,3], [], null, handleTest('testInt',results,true));
+            Test.testLong(-2147483649, 2147483648, 0, 45, null, [1,2,3], [], null, handleTest('testLong',results,true));
+            Test.testBoolean(true, false, null, [true, false, true], [], null, handleTest('testBoolean',results,true));
+            Test.testChar(0, 65535, 'a', 'b', null, [1,2,3], [], null, handleTest('testChar',results,true));
+            Test.testFloat(0.125, -0.125, 345.04296875, -345.04296875, null, [0.5,0.25,0.125], [], null, handleTest('testFloat',results,true));
+            Test.testDouble(0.125, -0.125, 345.04296875, -345.04296875, null, [0.5,0.25,0.125], [], null, handleTest('testDouble',results,true));
+            Test.testAddContacts([{fullName:'Philip Diffenderfer',address:{houseNumber:12}},{fullName:'John Smith',address:{houseNumber:34}}], handleTest('testAddContacts',results,46));
+            Test.testGetContact('John Smith', '(123) 456-7890', 123, '579 Simple Street', 'Main City', 'AR', 17555, handleTest('testGetContact',results,'[object Object],[object Object]'));
+            Test.testSessionVariable(handleTest('testSessionVariable',results,true));
+            Test.testURL(3452,'Hello World',true,handleTest('testURL',results,true));
+        }
+        
+        $(function() {
+        	$('iframe').load(function() {
+        		if (this.contentDocument) {
+        			var pre = $(this.contentDocument).find('pre');
+        			try {
+                        var content = pre.html();
+                        var json = JSON.parse(content);
+                        if (typeof json == 'string') {
+                            pre.html( json );   
+                        } else {
+                            pre.html( JSON.stringify( json ) );
+                        }
+        			} catch(e) {
+        			    pre.html(e);        				
+        			}
+        		}
+        	});
+        });
+        </script>
+        
     </body>
 </html>

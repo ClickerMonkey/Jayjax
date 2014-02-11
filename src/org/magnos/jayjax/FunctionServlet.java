@@ -10,23 +10,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.magnos.jayjax.io.ArgumentResolver;
-import org.magnos.jayjax.io.convert.JsonConverterFactory;
 import org.magnos.jayjax.json.Json;
 import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonObject;
 import org.magnos.jayjax.json.JsonValue;
+import org.magnos.jayjax.json.convert.JsonConverterFactory;
 
 
 public class FunctionServlet extends HttpServlet
 {
 
 	private static final long serialVersionUID = 1L;
-
+	private static final String CONTENT_TYPE = "application/json";
+	
 	@Override
 	public void init() throws ServletException
 	{
-		JayJax.initialize( getServletContext() );
+		Jayjax.initialize( getServletContext() );
 	}
 
 	@Override
@@ -47,6 +47,10 @@ public class FunctionServlet extends HttpServlet
 		catch (Exception e)
 		{
 			throw new ServletException( e );
+		}
+		finally
+		{
+		    Jayjax.setInvocation( null );
 		}
 	}
 
@@ -69,6 +73,10 @@ public class FunctionServlet extends HttpServlet
 		{
 			throw new ServletException( e );
 		}
+		finally
+		{
+		    Jayjax.setInvocation( null );
+		}
 	}
 
 	protected void handle( HttpServletRequest request, HttpServletResponse response, int requestMethod ) throws Exception
@@ -76,12 +84,22 @@ public class FunctionServlet extends HttpServlet
 		String path = request.getPathInfo();
 		JsonObject parameters = HttpJson.fromRequest( request );
 
-		for (Function function : JayJax.getFunctions())
+		for (Function function : Jayjax.getFunctions())
 		{
 			Matcher matcher = function.getAction().matcher( path );
 
 			if (matcher.matches())
 			{
+			    if (function.isSecure() && !request.isSecure())
+			    {
+			        throw new ServletException( "The invoked function is marked secure only, but the connection is not secure" );
+			    }
+			    
+			    if ((function.getRequestMethods() & requestMethod) == 0)
+			    {
+			        throw new ServletException( "The invoked function is not valid for method " + request.getMethod() );
+			    }
+			    
 				Invocation invocation = new Invocation();
 				invocation.setFunction( function );
 				invocation.setMatcher( matcher );
@@ -93,36 +111,52 @@ public class FunctionServlet extends HttpServlet
 
 				Object[] arguments = new Object[resolvers.length];
 				invocation.setArguments( arguments );
+				
+				Jayjax.setInvocation( invocation );
 
 				for (int i = 0; i < resolvers.length; i++)
 				{
 					arguments[i] = resolvers[i].getArgument( invocation );
 				}
 
-				Object controller = JayJax.getControllerInstance( function.getController(), request );
+                if (function.getValidator() != null)
+                {
+                    if (!function.getValidator().isValid( invocation ))
+                    {
+                        return;
+                    }
+                }
+				
+				Object controller = Jayjax.getControllerInstance( function.getController(), request );
 				
 				Method method = function.getMethod();
 				
 				Object result = method.invoke( controller, arguments );
-
+				invocation.setResult( result );
+				
 				if (method.getReturnType() != Void.class)
 				{
+                    response.setContentType( CONTENT_TYPE );
+                    
 					if (result == null)
 					{
+					    response.setContentLength( Json.NULL.length() );
 						response.getOutputStream().print( Json.NULL );
 					}
 					else
 					{
 						JsonConverter<Object, JsonValue> converter = JsonConverterFactory.getConverter( (Class<Object>)result.getClass() );
 						JsonValue json = converter.write( result );
-						response.getOutputStream().print( json.toJson() );
+						String jsonString = json.toJson();
+						
+						response.setContentLength( jsonString.length() );
+						response.getOutputStream().print( jsonString );
 					}
 				}
 
 				break;
 			}
 		}
-
 	}
 
 }

@@ -1,8 +1,20 @@
+
 package org.magnos.jayjax.json;
 
-
-public interface JsonConverter<T, JV extends JsonValue>
+public abstract class JsonConverter<T, JV extends JsonValue>
 {
-    public T read(JV value);
-    public JV write(T value);
+
+    public T missing()
+    {
+        return null;
+    }
+
+    public T empty()
+    {
+        return null;
+    }
+
+    public abstract T read( JV value );
+
+    public abstract JV write( T value );
 }

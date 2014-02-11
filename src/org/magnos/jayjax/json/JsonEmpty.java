@@ -19,41 +19,40 @@ package org.magnos.jayjax.json;
 import java.io.IOException;
 
 /**
- * A null value of unknown type.
+ * An empty value of unknown type.
  * 
  * @author Philip Diffenderfer
  *
  */
-public class JsonNull implements JsonValue
+public class JsonEmpty implements JsonValue
 {
 
 	/**
 	 * We only need one instance of this object.
 	 */
-	public static final JsonNull INSTANCE = new JsonNull();
+	public static final JsonEmpty INSTANCE = new JsonEmpty();
 
 	@Override
 	public Object getObject()
 	{
-		return null;
+		return Json.EMPTY;
 	}
 
 	@Override
 	public JsonType getType()
 	{
-		return JsonType.NULL;
+		return JsonType.EMPTY;
 	}
 
 	@Override
 	public String toJson()
 	{
-		return Json.NULL;
+		return Json.EMPTY;
 	}
 
 	@Override
 	public void write( JsonWriter out ) throws IOException
 	{
-		out.write( Json.NULL );
 	}
 
 }

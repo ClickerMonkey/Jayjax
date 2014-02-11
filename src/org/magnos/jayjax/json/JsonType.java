@@ -27,25 +27,29 @@ public enum JsonType
 	/**
 	 * A map of values by name.
 	 */
-	Object,
+	OBJECT,
 	/**
 	 * An indexed based array of values.
 	 */
-	Array,
+	ARRAY,
 	/**
 	 * A String value.
 	 */
-	String,
+	STRING,
 	/**
 	 * A NULL value with an unknown type.
 	 */
-	Null,
+	NULL,
 	/**
 	 * A signed whole or decimal number.
 	 */
-	Number,
+	NUMBER,
 	/**
 	 * A true or false value.
 	 */
-	Boolean
+	BOOLEAN,
+	/**
+	 * No value was specified. This is not a valid JSON value, but is required.
+	 */
+	EMPTY
 }

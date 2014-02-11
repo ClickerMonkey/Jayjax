@@ -249,7 +249,7 @@ public class JsonObject implements JsonValue
 	@Override
 	public JsonType getType()
 	{
-		return JsonType.Object;
+		return JsonType.OBJECT;
 	}
 
 	@Override

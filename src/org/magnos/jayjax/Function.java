@@ -4,7 +4,6 @@ package org.magnos.jayjax;
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 
-import org.magnos.jayjax.io.ArgumentResolver;
 
 
 public class Function
@@ -20,10 +19,10 @@ public class Function
 	private Controller controller;
 	private Pattern action;
 	private Method method;
-	private Class<?>[] parameters;
 	private ArgumentResolver[] resolvers;
 	private Validator validator;
 	private boolean secure;
+	private boolean javascript;
 	private int requestMethods;
 
 	public String getGivenAction()
@@ -86,16 +85,6 @@ public class Function
 		this.method = method;
 	}
 
-	public Class<?>[] getParameters()
-	{
-		return parameters;
-	}
-
-	public void setParameters( Class<?>[] parameters )
-	{
-		this.parameters = parameters;
-	}
-
 	public ArgumentResolver[] getResolvers()
 	{
 		return resolvers;
@@ -125,8 +114,18 @@ public class Function
 	{
 		this.secure = secure;
 	}
+	
+    public boolean isJavascript()
+    {
+        return javascript;
+    }
 
-	public int getRequestMethods()
+    public void setJavascript( boolean javascript )
+    {
+        this.javascript = javascript;
+    }
+
+    public int getRequestMethods()
 	{
 		return requestMethods;
 	}

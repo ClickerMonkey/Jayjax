@@ -45,6 +45,7 @@ public class Json
     public static final String TRUE = "true";
     public static final String FALSE = "false";
     public static final String NULL = "null";
+    public static final String EMPTY = "";
 
     public static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 

@@ -1,5 +1,5 @@
 
-package org.magnos.jayjax.io.convert;
+package org.magnos.jayjax.json.convert;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,8 +7,15 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.magnos.jayjax.json.JsonArray;
+import org.magnos.jayjax.json.JsonBoolean;
 import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonConverters;
+import org.magnos.jayjax.json.JsonEmpty;
+import org.magnos.jayjax.json.JsonNull;
+import org.magnos.jayjax.json.JsonNumber;
+import org.magnos.jayjax.json.JsonObject;
+import org.magnos.jayjax.json.JsonString;
 import org.magnos.jayjax.json.JsonValue;
 
 
@@ -48,6 +55,15 @@ public class JsonConverterFactory
         JsonConverters.addConvert( LinkedList.class, JsonConvertList.INSTANCE( LinkedList.class ) );
         JsonConverters.addConvert( Stack.class, JsonConvertList.INSTANCE( Stack.class ) );
         JsonConverters.addConvert( Vector.class, JsonConvertList.INSTANCE( Vector.class ) );
+        
+        // JSON
+        JsonConverters.addConvert( JsonEmpty.class, JsonConvertJson.INSTANCE( JsonEmpty.class ) );
+        JsonConverters.addConvert( JsonNull.class, JsonConvertJson.INSTANCE( JsonNull.class ) );
+        JsonConverters.addConvert( JsonBoolean.class, JsonConvertJson.INSTANCE( JsonBoolean.class ) );
+        JsonConverters.addConvert( JsonString.class, JsonConvertJson.INSTANCE( JsonString.class ) );
+        JsonConverters.addConvert( JsonNumber.class, JsonConvertJson.INSTANCE( JsonNumber.class ) );
+        JsonConverters.addConvert( JsonArray.class, JsonConvertJson.INSTANCE( JsonArray.class ) );
+        JsonConverters.addConvert( JsonObject.class, JsonConvertJson.INSTANCE( JsonObject.class ) );
     }
 
     @SuppressWarnings ("rawtypes" )

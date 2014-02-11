@@ -70,7 +70,7 @@ public class JsonBoolean implements JsonValue
 	@Override
 	public JsonType getType()
 	{
-		return JsonType.Boolean;
+		return JsonType.BOOLEAN;
 	}
 
 	@Override

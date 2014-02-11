@@ -1,16 +1,16 @@
-package org.magnos.jayjax.io.resolve;
+package org.magnos.jayjax.resolve;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 
+import org.magnos.jayjax.ArgumentResolver;
 import org.magnos.jayjax.Invocation;
-import org.magnos.jayjax.io.ArgumentResolver;
 
-public class FileResolver extends ArgumentResolver
+public class PartResolver extends ArgumentResolver
 {
 
-	public FileResolver( String name, Class<?> type )
+	public PartResolver( String name, Class<?> type )
 	{
 		super( name, type );
 	}

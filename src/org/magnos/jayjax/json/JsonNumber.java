@@ -76,7 +76,7 @@ public class JsonNumber implements JsonValue
     @Override
     public JsonType getType()
     {
-        return JsonType.Number;
+        return JsonType.NUMBER;
     }
 
     @Override

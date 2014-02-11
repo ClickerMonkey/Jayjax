@@ -282,7 +282,7 @@ public class JsonArray implements JsonValue
 	@Override
 	public JsonType getType()
 	{
-		return JsonType.Array;
+		return JsonType.ARRAY;
 	}
 
 	@Override

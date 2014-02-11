@@ -88,7 +88,7 @@ public class JsonString implements JsonValue
 	@Override
 	public JsonType getType()
 	{
-		return JsonType.String;
+		return JsonType.STRING;
 	}
 
 	@Override

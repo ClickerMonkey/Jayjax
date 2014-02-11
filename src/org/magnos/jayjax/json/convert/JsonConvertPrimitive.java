@@ -1,9 +1,10 @@
-package org.magnos.jayjax.io.convert;
+package org.magnos.jayjax.json.convert;
 
 import org.magnos.jayjax.json.JsonBoolean;
 import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonNumber;
 import org.magnos.jayjax.json.JsonString;
+import org.magnos.jayjax.json.JsonValue;
 
 
 public class JsonConvertPrimitive
@@ -63,11 +64,17 @@ public class JsonConvertPrimitive
         }
     };
     
-    public static final JsonConverter<Character, JsonString> CHAR = new JsonConverter<Character, JsonString>() {
-        public Character read( JsonString value ) {
-            return value.get().charAt( 0 );
+    public static final JsonConverter<Character, JsonValue> CHAR = new JsonConverter<Character, JsonValue>() {
+        public Character read( JsonValue value ) {
+            if (value instanceof JsonNumber) {
+                return (char)((JsonNumber)value).get().intValue();
+            } else if (value instanceof JsonString) {
+                return ((JsonString)value).get().charAt( 0 );
+            } else {
+                throw new RuntimeException( value.getClass().getSimpleName() +" is not valid for a Character" );
+            }
         }
-        public JsonString write( Character value ) {
+        public JsonValue write( Character value ) {
             return new JsonString( value.toString() );
         }
     };

@@ -1,4 +1,4 @@
-package org.magnos.jayjax.io.convert;
+package org.magnos.jayjax.json.convert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +7,7 @@ import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonString;
 
 
-public class JsonConvertEnum<T extends Enum<T>> implements JsonConverter<T, JsonString>
+public class JsonConvertEnum<T extends Enum<T>> extends JsonConverter<T, JsonString>
 {
 
     private Map<String, T> enumConstantMap;
