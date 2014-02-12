@@ -25,5 +25,6 @@
         <function action="/test/testUUID" method="POST" invoke="testUUID(a,b)" />
         <function action="/test/testClass" method="POST" invoke="testClass(a,b)" />
         <function action="/test/testJson" method="POST" invoke="testJson(json)" />
+        <function action="/test/testMap" method="POST" invoke="testMap(a,b,c)" />
     </controller>
 </jayjax>

@@ -271,6 +271,17 @@
                   b: <input type="text" class="form-control" name="b" value>
                 </form>
             </div>
+            <!-- testMap -->
+            <div class="row">
+                <iframe name="testMap_result"></iframe>
+                <form action="/jayjax/jj/test/testMap" method="POST" target="testMap_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testMap</button>
+                  a.a: <input type="text" class="form-control" name="a[a]" value="true">
+                  a.b: <input type="text" class="form-control" name="a[b]" value="Hi">
+                  a.c: <input type="text" class="form-control" name="a[c]" value="4.5">    
+                  c: <input type="text" class="form-control" name="c" value>
+                </form>
+            </div>
             <!-- testAddContacts -->
             <div class="row">
                 <iframe name="testAddContacts_result"></iframe>
@@ -327,16 +338,6 @@
                   <button type="submit" class="btn btn-default">testSessionVariable</button>
                 </form>
             </div>
-            <!-- testURL -->
-            <div class="row">
-                <iframe name="testURL_result"></iframe>
-                <form action="/jayjax/jj/test/testURL" method="GET" target="testURL_result" class="form-inline">
-                  <button type="submit" class="btn btn-default">testURL</button>
-                  id: <input type="text" class="form-control" name="#1" value="3452">  
-                  message: <input type="text" class="form-control" name="#2" value="Hello World">
-                  flag: <input type="text" class="form-control" name="#3" value="true">
-                </form>
-            </div>
         </div>
         
         <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -389,6 +390,7 @@
             Test.testUUID('91b694a0-3f83-4c1c-b998-2351705c002c',null,handleTest('testUUID',results,true));
             Test.testClass('java.lang.Integer',null,handleTest('testClass',results,'java.lang.Long'));
             Test.testJson({message:'Hello World',success:true},handleTest('testJson',results,true));
+            Test.testMap({a:true,b:'Hi',c:4.5},{},null,handleTest('testMap',results,true));
         }
         
         $(function() 

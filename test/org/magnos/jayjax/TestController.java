@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.Part;
@@ -317,6 +318,17 @@ public class TestController
     	       ((JsonObject)json).has( "success" ) &&
     	       ((JsonObject)json).get( "message" ).equals( "Hello World" ) &&
     	       ((JsonObject)json).get( "success" ).equals( Boolean.TRUE );
+    }
+    
+    // Test.testMap({a:true,b:'Hi',c:4.5}, {}, null);
+    public boolean testMap(Map<String, String> a, Map<String, String> b, Map<String, String> c)
+    {
+    	return a != null && a.size() == 3 && 
+    	       a.get( "a" ).equals( "true" ) &&
+    	       a.get( "b" ).equals( "Hi" ) &&
+    	       a.get( "c" ).equals( "4.5" ) &&
+    	       b != null && b.size() == 0 &&
+    	       c == null;
     }
     
     /*

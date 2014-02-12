@@ -25,6 +25,12 @@ public abstract class JsonConvertMap<T extends Map<String, String>> extends Json
 	protected abstract T emptyMap();
 
 	@Override
+	public T missing()
+	{
+		return emptyMap();
+	}
+	
+	@Override
 	public T read( JsonObject value )
 	{
 		T map = emptyMap();
