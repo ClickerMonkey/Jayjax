@@ -1,5 +1,10 @@
 package org.magnos.jayjax.json.convert;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.magnos.jayjax.json.JsonBoolean;
 import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonNumber;
@@ -87,5 +92,41 @@ public class JsonConvertPrimitive
             return new JsonBoolean( value );
         }
     };
+    
+    public static final JsonConverter<BigInteger, JsonNumber> BIG_INTEGER = new JsonConverter<BigInteger, JsonNumber>() {
+		public BigInteger read( JsonNumber value ) {
+			return new BigInteger( value.get().toString() );
+		}
+		public JsonNumber write( BigInteger value ) {
+			return new JsonNumber( value.doubleValue() );
+		}
+	};
+    
+    public static final JsonConverter<BigDecimal, JsonNumber> BIG_DECIMAL = new JsonConverter<BigDecimal, JsonNumber>() {
+		public BigDecimal read( JsonNumber value ) {
+			return new BigDecimal( value.get().toString() );
+		}
+		public JsonNumber write( BigDecimal value ) {
+			return new JsonNumber( value );
+		}
+	};
+    
+    public static final JsonConverter<AtomicInteger, JsonNumber> ATOMIC_INTEGER = new JsonConverter<AtomicInteger, JsonNumber>() {
+		public AtomicInteger read( JsonNumber value ) {
+			return new AtomicInteger( value.get().intValue() );
+		}
+		public JsonNumber write( AtomicInteger value ) {
+			return new JsonNumber( value );
+		}
+	};
+    
+    public static final JsonConverter<AtomicLong, JsonNumber> ATOMIC_LONG = new JsonConverter<AtomicLong, JsonNumber>() {
+		public AtomicLong read( JsonNumber value ) {
+			return new AtomicLong( value.get().intValue() );
+		}
+		public JsonNumber write( AtomicLong value ) {
+			return new JsonNumber( value );
+		}
+	};
     
 }

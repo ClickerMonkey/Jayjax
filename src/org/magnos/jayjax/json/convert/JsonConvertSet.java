@@ -1,39 +1,40 @@
 package org.magnos.jayjax.json.convert;
 
-import java.util.List;
+import java.util.Set;
 
 import org.magnos.jayjax.json.JsonArray;
 import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonValue;
 
 
-public class JsonConvertList extends JsonConverter<List<Object>, JsonArray>
+public class JsonConvertSet extends JsonConverter<Set<Object>, JsonArray>
 {
     
-    public static final JsonConvertList INSTANCE = new JsonConvertList();
+    public static final JsonConvertSet INSTANCE = new JsonConvertSet();
     
     @Override
-    public List<Object> read( JsonArray value )
+    public Set<Object> read( JsonArray value )
     {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public JsonArray write( List<Object> value )
+    public JsonArray write( Set<Object> value )
     {
         int n = value.size();
         JsonArray array = new JsonArray( new JsonValue[ n ] );
+        int index = 0;
         
-        for (int i = 0; i < n; i++)
+        for (Object e : value)
         {
-            Object e = value.get( i );
-            
-            if (e != null)
+        	if (e != null)
             {
                 JsonConverter<Object, JsonValue> converter = JsonConverterFactory.getConverter( (Class<Object>)e.getClass() );
                 
-                array.set( i, converter.write( e ) );
+                array.set( index, converter.write( e ) );
             }
+        	
+        	index++;
         }
         
         return array;

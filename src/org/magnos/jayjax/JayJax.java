@@ -17,6 +17,8 @@ import org.magnos.jayjax.xml.XmlLoader;
 public class Jayjax
 {
 
+	public static final String CONFIGURATION_FILE = "/WEB-INF/jayjax.xml";
+	
 	private static final List<Function> functions = new ArrayList<Function>();
 	private static final ConcurrentHashMap<String, Controller> controllers = new ConcurrentHashMap<String, Controller>();
 	private static final ConcurrentHashMap<String, Object> controllerCacheApplication = new ConcurrentHashMap<String, Object>();
@@ -32,7 +34,7 @@ public class Jayjax
 		{
 			try
 			{
-				InputStream in = context.getResourceAsStream( "/WEB-INF/jayjax.xml" );
+				InputStream in = context.getResourceAsStream( CONFIGURATION_FILE );
 				
 				try
 				{

@@ -31,18 +31,17 @@ public class VariableResolver
 
     public static ArgumentResolver getResolver( String variable, Class<?> type )
     {
-        switch (variable)
-        {
-        case "$request":
+    	String lower = variable.toLowerCase();
+    	
+        if (lower.equals("$request")) {
             ensureTypes( variable, type, ServletRequest.class, HttpServletRequest.class );
             return new ArgumentResolver( variable, type ) {
-
                 public Object getArgument( Invocation invocation ) throws IOException, ServletException
                 {
                     return invocation.getRequest();
                 }
             };
-        case "$response":
+        } else if (lower.equals("$response")) {
             ensureTypes( variable, type, ServletResponse.class, HttpServletResponse.class );
             return new ArgumentResolver( variable, type ) {
 
@@ -51,7 +50,7 @@ public class VariableResolver
                     return invocation.getResponse();
                 }
             };
-        case "$session":
+    	} else if (lower.equals("$session")) {
             ensureTypes( variable, type, HttpSession.class );
             return new ArgumentResolver( variable, type ) {
 
@@ -60,7 +59,7 @@ public class VariableResolver
                     return invocation.getRequest().getSession( true );
                 }
             };
-        case "$data":
+    	} else if (lower.equals("$data")) {
             ensureTypes( variable, type, JsonValue.class, JsonObject.class );
             return new ArgumentResolver( variable, type ) {
 
@@ -69,7 +68,7 @@ public class VariableResolver
                     return invocation.getParameters();
                 }
             };
-        case "$async":
+    	} else if (lower.equals("$async")) {
             ensureTypes( variable, type, AsyncContext.class );
             return new ArgumentResolver( variable, type ) {
 
@@ -78,7 +77,7 @@ public class VariableResolver
                     return invocation.getRequest().getAsyncContext();
                 }
             };
-        case "$authType":
+    	} else if (lower.equals("$authType")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -87,7 +86,7 @@ public class VariableResolver
                     return invocation.getRequest().getAuthType();
                 }
             };
-        case "$contentType":
+    	} else if (lower.equals("$contentType")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -96,7 +95,7 @@ public class VariableResolver
                     return invocation.getRequest().getContentType();
                 }
             };
-        case "$cookies":
+    	} else if (lower.equals("$cookies")) {
             ensureTypes( variable, type, Cookie[].class );
             return new ArgumentResolver( variable, type ) {
 
@@ -105,7 +104,7 @@ public class VariableResolver
                     return invocation.getRequest().getCookies();
                 }
             };
-        case "$method":
+    	} else if (lower.equals("$method")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -114,7 +113,7 @@ public class VariableResolver
                     return invocation.getRequest().getMethod();
                 }
             };
-        case "$pathInfo":
+    	} else if (lower.equals("$pathInfo")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -123,7 +122,7 @@ public class VariableResolver
                     return invocation.getRequest().getPathInfo();
                 }
             };
-        case "$pathTranslated":
+    	} else if (lower.equals("$pathTranslated")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -132,7 +131,7 @@ public class VariableResolver
                     return invocation.getRequest().getPathTranslated();
                 }
             };
-        case "$protocol":
+    	} else if (lower.equals("$protocol")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -141,7 +140,7 @@ public class VariableResolver
                     return invocation.getRequest().getProtocol();
                 }
             };
-        case "$query":
+    	} else if (lower.equals("$query")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -150,7 +149,7 @@ public class VariableResolver
                     return invocation.getRequest().getQueryString();
                 }
             };
-        case "$uri":
+    	} else if (lower.equals("$uri")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -159,7 +158,7 @@ public class VariableResolver
                     return invocation.getRequest().getRequestURI();
                 }
             };
-        case "$scheme":
+    	} else if (lower.equals("$scheme")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -168,7 +167,7 @@ public class VariableResolver
                     return invocation.getRequest().getScheme();
                 }
             };
-        case "$serverName":
+    	} else if (lower.equals("$serverName")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -177,7 +176,7 @@ public class VariableResolver
                     return invocation.getRequest().getServerName();
                 }
             };
-        case "$serverPort":
+    	} else if (lower.equals("$serverPort")) {
             ensureTypes( variable, type, Integer.class, int.class );
             return new ArgumentResolver( variable, type ) {
 
@@ -186,7 +185,7 @@ public class VariableResolver
                     return invocation.getRequest().getServerPort();
                 }
             };
-        case "$servletContext":
+    	} else if (lower.equals("$servletContext")) {
             ensureTypes( variable, type, ServletContext.class );
             return new ArgumentResolver( variable, type ) {
 
@@ -195,7 +194,7 @@ public class VariableResolver
                     return invocation.getRequest().getServletContext();
                 }
             };
-        case "$servletPath":
+    	} else if (lower.equals("$servletPath")) {
             ensureTypes( variable, type, STRING_TYPES );
             return new ArgumentResolver( variable, type ) {
 
@@ -204,7 +203,7 @@ public class VariableResolver
                     return invocation.getRequest().getServletPath();
                 }
             };
-        case "$principal":
+    	} else if (lower.equals("$principal")) {
             ensureTypes( variable, type, UserPrincipal.class );
             return new ArgumentResolver( variable, type ) {
 

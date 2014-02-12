@@ -10,7 +10,7 @@ public class JsonConverters
     private static final ConcurrentHashMap<Class<?>, JsonConverter<?, ?>> converts
         = new ConcurrentHashMap<Class<?>, JsonConverter<?, ?>>();
     
-    public static <T> void addConvert(Class<T> type, JsonConverter<T, ?> convert)
+    public static void addConvert(Class<?> type, JsonConverter<?, ?> convert)
     {
         converts.put( type, convert );
     }

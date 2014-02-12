@@ -7,12 +7,7 @@ import org.magnos.jayjax.json.JsonValue;
 public class JsonConvertJson extends JsonConverter<JsonValue, JsonValue>
 {
 
-    private static final JsonConvertJson INSTANCE = new JsonConvertJson();
-    
-    public static final <T extends JsonValue, JC extends JsonConverter<T, ?>> JC INSTANCE(Class<T> type)
-    {
-        return (JC) INSTANCE;
-    }
+    public static final JsonConvertJson INSTANCE = new JsonConvertJson();
     
     @Override
     public JsonValue read( JsonValue value )

@@ -4,11 +4,10 @@ import java.lang.reflect.Array;
 
 import org.magnos.jayjax.json.JsonArray;
 import org.magnos.jayjax.json.JsonConverter;
-import org.magnos.jayjax.json.JsonString;
 import org.magnos.jayjax.json.JsonValue;
 
 
-public class JsonConvertArray<T> extends JsonConverter<T, JsonValue>
+public class JsonConvertArray<T> extends JsonConverter<T, JsonArray>
 {
 
     private Class<?> elementType;
@@ -27,33 +26,15 @@ public class JsonConvertArray<T> extends JsonConverter<T, JsonValue>
     }
     
     @Override
-    public T read( JsonValue value )
+    public T read( JsonArray value )
     {
-        if (value instanceof JsonString)
-        {
-            if (((JsonString)value).get().length() == 0)
-            {
-                return (T) Array.newInstance( elementType, 0 );
-            }
-            else
-            {
-                throw new RuntimeException( "An array cannot be read from a string value" );
-            }
-        }
-        else if (!(value instanceof JsonArray))
-        {
-            throw new RuntimeException( "An array type was expected, this was found instead: " + value.getClass().getSimpleName() );
-        }
-        
-        JsonArray valueArray = (JsonArray) value;
-        
-        int n = valueArray.length();
+        int n = value.length();
         
         Object array = Array.newInstance( elementType, n );
         
         for (int i = 0; i < n; i++)
         {
-            JsonValue e = valueArray.getValue( i );
+            JsonValue e = value.getValue( i );
             
             if (e != null)
             {
