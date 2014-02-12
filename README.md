@@ -12,7 +12,7 @@ The easiest way to call your Java code from JavaScript or form submits.
 
 ## Example
 
-#### Configuration (jayjax.xml)
+#### Configuration (WEB-INF/jayjax.xml)
 ```xml
 <controller class="com.company.MyController" name="MyController" javascript="true">
   <function action="/user/(\d+)" method="GET" invoke="getUser(#1)" />
@@ -65,7 +65,7 @@ public class MyController {
     <button type="submit">Update Name and Picture</button>
 </form>
 ```
-#### Configuration (web.xml)
+#### Configuration (WEB-INF/web.xml)
 ```xml
 <servlet>
     <servlet-name>jayjax</servlet-name>

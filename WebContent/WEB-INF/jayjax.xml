@@ -13,8 +13,8 @@
         <function action="/test/testDouble" method="POST" invoke="testDouble(a,b,c,d,e,f,g,h)" />
         <function action="/test/testAddContacts" method="POST" invoke="testAddContacts(contact)" />
         <function action="/test/testGetContact" method="POST" invoke="testGetContact(fullName,phoneNumber,houseNumber,street,city,state,zip)" />
-        <function action="/test/testSingleUpload" method="POST" invoke="testSingleUpload(uploadedFile)" />
-        <function action="/test/testMultipleUpload" method="POST" invoke="testMultipleUpload(uploadedFile)" />
+        <function action="/test/testSingleUpload" method="POST" invoke="testSingleUpload(uploadedFile)" javascript="false" />
+        <function action="/test/testMultipleUpload" method="POST" invoke="testMultipleUpload(uploadedFile)" javascript="false" />
         <function action="/test/testSessionVariable" method="POST" invoke="testSessionVariable($session[message])" />
         <function action="/test/testURL/(\d+)/([^/]+)/(true|false)" method="GET|POST" invoke="testURL(#1,#2,#3)" />
         <function action="/test/testDate" method="POST" invoke="testDate(a,b,c,d,e)" />

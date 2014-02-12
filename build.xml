@@ -6,7 +6,9 @@
 	<property name="jar-core-src" value="${build}/${project}-${version}-src.jar" />
 
 	<path id="root-classpath">
-        <pathelement location="lib/" />
+	    
+        <pathelement location="lib/servlet-api.jar" />
+        
     </path>
 	
 	<target name="init">

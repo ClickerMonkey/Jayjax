@@ -65,7 +65,8 @@ public class JavascriptServlet extends HttpServlet
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
-        String controllerName = request.getPathInfo().substring( 1 );
+    	String path = request.getPathInfo();
+        String controllerName = path.substring( 1, path.length() - 3 );
         JavascriptFile cached = javascriptCache.get( controllerName );
 
         if (cached == null)
