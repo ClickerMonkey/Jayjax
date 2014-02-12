@@ -1,16 +1,16 @@
 jayjax
 ======
 
-The easiest way to call your Java code from JavaScript or form submits.
+The easiest way to call your Java code from JavaScript or form submits. 
 
-Features:
+**Features**
 - Minimal configuration.
 - Expose your methods for API calls: i.e. GET /user/profile/123414
 - Generates JavaScript for making asynchronous calls to defined methods.
 - Automatic serialization of objects, no configuration or coding required.
 - Single & Multiple File uploading.
 
-# Example
+## Example
 
 #### Configuration (jayjax.xml)
 ```xml
@@ -50,19 +50,19 @@ public class MyController {
   });
 </script>
 ```
-#### AND/OR HTML
+#### HTML
 ```html
 <!-- MyController.post -->
 <form action="/jj/blog/post" method="POST">
     <input type="text" name="title">
     <textarea name="description"></textarea>
-    <button type="submit"">Submit Blog Post</button>
+    <button type="submit">Submit Blog Post</button>
 </form>
 <!-- MyController.update -->
 <form action="/jj/user/profile/update" method="POST" enctype="multipart/form-data">
     <input type="text" name="name">
     <input type="file" name="picture">
-    <button type="submit"">Update Name & Picture</button>
+    <button type="submit">Update Name and Picture</button>
 </form>
 ```
 #### Configuration (web.xml)
@@ -80,7 +80,6 @@ public class MyController {
     <servlet-name>jayjax</servlet-name>
     <url-pattern>/jj/*</url-pattern>
 </servlet-mapping>
-
 <servlet>
     <servlet-name>jayjax javascript</servlet-name>
     <servlet-class>org.magnos.jayjax.JavascriptServlet</servlet-class>
