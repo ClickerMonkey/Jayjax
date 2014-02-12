@@ -4,27 +4,54 @@ package org.magnos.jayjax.json.convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.CharBuffer;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.Vector;
 import java.util.WeakHashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TransferQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 import javax.swing.text.Segment;
 
@@ -75,23 +102,55 @@ public class JsonConverterFactory
         JsonConverters.addConvert( Appendable.class, JsonConvertString.APPENDABLE );
         JsonConverters.addConvert( Segment.class, JsonConvertString.SEGMENT );
         JsonConverters.addConvert( CharBuffer.class, JsonConvertString.CHAR_BUFFER );
+
+        // Date
+        JsonConverters.addConvert( Date.class, JsonConvertDate.DATE );
+        JsonConverters.addConvert( java.sql.Date.class, JsonConvertDate.SQL_DATE );
+        JsonConverters.addConvert( Time.class, JsonConvertDate.TIME );
+        JsonConverters.addConvert( Timestamp.class, JsonConvertDate.TIMESTAMP );
+        JsonConverters.addConvert( Calendar.class, JsonConvertDate.CALENDAR );
+        
+        // Collection (out only)
+        JsonConverters.addConvert( Collection.class, JsonConvertCollection.INSTANCE );
         
         // List (out only)
-        JsonConverters.addConvert( List.class, JsonConvertList.INSTANCE );
-        JsonConverters.addConvert( ArrayList.class, JsonConvertList.INSTANCE );
-        JsonConverters.addConvert( LinkedList.class, JsonConvertList.INSTANCE );
-        JsonConverters.addConvert( Stack.class, JsonConvertList.INSTANCE );
-        JsonConverters.addConvert( Vector.class, JsonConvertList.INSTANCE );
+        JsonConverters.addConvert( List.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( ArrayList.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( LinkedList.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( Stack.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( Vector.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( CopyOnWriteArrayList.class, JsonConvertCollection.INSTANCE );
         
         // Set (out only)
-        JsonConverters.addConvert( Set.class, JsonConvertSet.INSTANCE );
-        JsonConverters.addConvert( ConcurrentSkipListSet.class, JsonConvertSet.INSTANCE );
-        JsonConverters.addConvert( CopyOnWriteArraySet.class, JsonConvertSet.INSTANCE );
-        JsonConverters.addConvert( HashSet.class, JsonConvertSet.INSTANCE );
-        JsonConverters.addConvert( LinkedHashSet.class, JsonConvertSet.INSTANCE );
-        JsonConverters.addConvert( TreeSet.class, JsonConvertSet.INSTANCE );
+        JsonConverters.addConvert( Set.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( SortedSet.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( ConcurrentSkipListSet.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( CopyOnWriteArraySet.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( HashSet.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( LinkedHashSet.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( TreeSet.class, JsonConvertCollection.INSTANCE );
+        
+        // Queue (out only)
+        JsonConverters.addConvert( Queue.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( PriorityQueue.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( ConcurrentLinkedQueue.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( BlockingQueue.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( LinkedBlockingQueue.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( ArrayBlockingQueue.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( SynchronousQueue.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( PriorityBlockingQueue.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( TransferQueue.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( LinkedTransferQueue.class, JsonConvertCollection.INSTANCE );
+        
+        // Deque (out only)
+        JsonConverters.addConvert( Deque.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( ArrayDeque.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( BlockingDeque.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( LinkedBlockingDeque.class, JsonConvertCollection.INSTANCE );
+        JsonConverters.addConvert( ConcurrentLinkedDeque.class, JsonConvertCollection.INSTANCE );
         
         // Map (<String, String> only)
+        JsonConverters.addConvert( Map.class, JsonConvertMap.MAP );
         JsonConverters.addConvert( Map.class, JsonConvertMap.MAP );
         JsonConverters.addConvert( HashMap.class, JsonConvertMap.HASH_MAP );
         JsonConverters.addConvert( LinkedHashMap.class, JsonConvertMap.LINKED_HASH_MAP );
@@ -99,7 +158,15 @@ public class JsonConverterFactory
         JsonConverters.addConvert( ConcurrentSkipListMap.class, JsonConvertMap.CONCURRENT_SKIP_LIST_MAP );
         JsonConverters.addConvert( IdentityHashMap.class, JsonConvertMap.IDENTITY_HASH_MAP );
         JsonConverters.addConvert( TreeMap.class, JsonConvertMap.TREE_MAP );
+        JsonConverters.addConvert( NavigableMap.class, JsonConvertMap.TREE_MAP );
+        JsonConverters.addConvert( SortedMap.class, JsonConvertMap.TREE_MAP );
         JsonConverters.addConvert( WeakHashMap.class, JsonConvertMap.WEAK_HASH_MAP );
+        JsonConverters.addConvert( Hashtable.class, JsonConvertMap.HASHTABLE );
+
+        // Miscellaneous
+        JsonConverters.addConvert( Pattern.class, JsonConvertMisc.PATTERN );
+        JsonConverters.addConvert( UUID.class, JsonConvertMisc.UUID_OBJECT );
+        JsonConverters.addConvert( Class.class, JsonConvertMisc.CLASS );
         
         // JSON
         JsonConverters.addConvert( JsonValue.class, JsonConvertJson.INSTANCE );

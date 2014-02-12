@@ -4,11 +4,20 @@ package org.magnos.jayjax;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.Part;
+
+import org.magnos.jayjax.json.JsonObject;
+import org.magnos.jayjax.json.JsonType;
+import org.magnos.jayjax.json.JsonValue;
 
 
 
@@ -226,8 +235,89 @@ public class TestController
         return id == 3452L && message.equals( "Hello World" ) && flag == true;
     }
     
+    // Test.testDate(new Date(), null, [new Date(),newDate()], [], null);
+    public boolean testDate(Date a, Date b, Date[] c, Date[] d, Date[] e)
+    {
+    	Date now = new Date();
+    	
+    	return a != null && sameSecond(a, now) &&
+    	       b == null && 
+    	       c != null && c.length == 2 && c[0] != null && c[1] != null &&  sameSecond(c[0], now) && sameSecond(c[1], now) &&
+    	       d != null && d.length == 0 &&
+    	       e == null;
+    }
     
+    // Test.testTime(new Date(), null, [new Date(),newDate()], [], null);
+    public boolean testTime(Time a, Time b, Time[] c, Time[] d, Time[] e)
+    {
+    	Date now = new Date();
+    	
+    	return a != null && sameSecond(a, now) &&
+    	       b == null && 
+    	       c != null && c.length == 2 && c[0] != null && c[1] != null &&  sameSecond(c[0], now) && sameSecond(c[1], now) &&
+    	       d != null && d.length == 0 &&
+    	       e == null;
+    }
     
+    // Test.testTimestamp(new Date(), null, [new Date(),newDate()], [], null);
+    public boolean testTimestamp(Timestamp a, Timestamp b, Timestamp[] c, Timestamp[] d, Timestamp[] e)
+    {
+    	Date now = new Date();
+    	
+    	return a != null && sameSecond(a, now) &&
+    	       b == null && 
+    	       c != null && c.length == 2 && c[0] != null && c[1] != null &&  sameSecond(c[0], now) && sameSecond(c[1], now) &&
+    	       d != null && d.length == 0 &&
+    	       e == null;
+    }
+    
+    // Test.testSqlDate(new Date(), null, [new Date(),newDate()], [], null);
+    public boolean testSqlDate(java.sql.Date a, java.sql.Date b, java.sql.Date[] c, java.sql.Date[] d, java.sql.Date[] e)
+    {
+    	Date now = new Date();
+    	
+    	return a != null && sameSecond(a, now) &&
+    	       b == null && 
+    	       c != null && c.length == 2 && c[0] != null && c[1] != null &&  sameSecond(c[0], now) && sameSecond(c[1], now) &&
+    	       d != null && d.length == 0 &&
+    	       e == null;
+    }
+    
+    // Test.testCalendar(new Date(), null, [new Date(),newDate()], [], null);
+    public boolean testCalendar(Calendar a, Calendar b, Calendar[] c, Calendar[] d, Calendar[] e)
+    {
+    	Date now = new Date();
+    	
+    	return a != null && sameSecond(a.getTime(), now) &&
+    	       b == null && 
+    	       c != null && c.length == 2 && c[0] != null && c[1] != null &&  sameSecond(c[0].getTime(), now) && sameSecond(c[1].getTime(), now) &&
+    	       d != null && d.length == 0 &&
+    	       e == null;
+    }
+    
+    // Test.testUUID('91b694a0-3f83-4c1c-b998-2351705c002c', null);
+    public boolean testUUID(UUID a, UUID b)
+    {
+    	return a != null && a.equals( UUID.fromString( "91b694a0-3f83-4c1c-b998-2351705c002c" ) ) &&
+    		   b == null;
+    }
+    
+    // Test.testClass('java.lang.Integer', null);
+    public Class<?> testClass(Class<?> a, Class<?> b)
+    {
+    	return (a == Integer.class && b == null) ? Long.class : null;
+    }
+    
+    // Test.testJson({message:'Hello World',success:true});
+    public boolean testJson(JsonValue json)
+    {
+    	return json != null && 
+    	       json.getType() == JsonType.OBJECT &&
+    	       ((JsonObject)json).has( "message" ) &&
+    	       ((JsonObject)json).has( "success" ) &&
+    	       ((JsonObject)json).get( "message" ).equals( "Hello World" ) &&
+    	       ((JsonObject)json).get( "success" ).equals( Boolean.TRUE );
+    }
     
     /*
      * HELPER METHODS & CLASSES 
@@ -236,6 +326,11 @@ public class TestController
     private boolean almostEquals(double a, double b) 
     {
         return Math.abs(a - b) < 0.00001;
+    }
+    
+    private boolean sameSecond(Date a, Date b)
+    {
+    	return Math.abs(a.getTime() - b.getTime()) < 60000;
     }
 
     public static class Contact 

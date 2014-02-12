@@ -3,6 +3,7 @@ package org.magnos.jayjax.json.convert;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -101,6 +102,12 @@ public abstract class JsonConvertMap<T extends Map<String, String>> extends Json
 	public static JsonConvertMap<WeakHashMap<String, String>> WEAK_HASH_MAP = new JsonConvertMap<WeakHashMap<String,String>>() {
 		protected WeakHashMap<String, String> emptyMap() {
 			return new WeakHashMap<String, String>();
+		}
+	};
+	
+	public static JsonConvertMap<Hashtable<String, String>> HASHTABLE = new JsonConvertMap<Hashtable<String,String>>() {
+		protected Hashtable<String, String> emptyMap() {
+			return new Hashtable<String, String>();
 		}
 	};
 	

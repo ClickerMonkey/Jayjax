@@ -13,8 +13,10 @@
                 border: 1px solid #999;
             } 
             .alert {
-                width: 20%;
+                width: 33%;
                 display: inline-block;
+                margin-bottom: 4px;
+                padding: 5px;
             }
         </style>
     </head>
@@ -191,6 +193,84 @@
                   h: <input type="text" class="form-control" name="h" value>
                 </form>
             </div>
+            <!-- testDate -->
+            <div class="row">
+                <iframe name="testDate_result"></iframe>
+                <form action="/jayjax/jj/test/testDate" method="POST" target="testDate_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testDate</button>
+                  a: <input type="text" class="form-control time-now" name="a">    
+                  b: <input type="text" class="form-control" name="b" value>
+                  c[0]: <input type="text" class="form-control time-now" name="c">
+                  c[1]: <input type="text" class="form-control time-now" name="c">
+                  e: <input type="text" class="form-control" name="e" value>
+                </form>
+            </div>
+            <!-- testTime -->
+            <div class="row">
+                <iframe name="testTime_result"></iframe>
+                <form action="/jayjax/jj/test/testTime" method="POST" target="testTime_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testTime</button>
+                  a: <input type="text" class="form-control time-now" name="a">    
+                  b: <input type="text" class="form-control" name="b" value>
+                  c[0]: <input type="text" class="form-control time-now" name="c">
+                  c[1]: <input type="text" class="form-control time-now" name="c">
+                  e: <input type="text" class="form-control" name="e" value>
+                </form>
+            </div>
+            <!-- testTimestamp -->
+            <div class="row">
+                <iframe name="testTimestamp_result"></iframe>
+                <form action="/jayjax/jj/test/testTimestamp" method="POST" target="testTimestamp_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testTimestamp</button>
+                  a: <input type="text" class="form-control time-now" name="a">    
+                  b: <input type="text" class="form-control" name="b" value>
+                  c[0]: <input type="text" class="form-control time-now" name="c">
+                  c[1]: <input type="text" class="form-control time-now" name="c">
+                  e: <input type="text" class="form-control" name="e" value>
+                </form>
+            </div>
+            <!-- testSqlDate -->
+            <div class="row">
+                <iframe name="testSqlDate_result"></iframe>
+                <form action="/jayjax/jj/test/testSqlDate" method="POST" target="testSqlDate_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testSqlDate</button>
+                  a: <input type="text" class="form-control time-now" name="a">    
+                  b: <input type="text" class="form-control" name="b" value>
+                  c[0]: <input type="text" class="form-control time-now" name="c">
+                  c[1]: <input type="text" class="form-control time-now" name="c">
+                  e: <input type="text" class="form-control" name="e" value>
+                </form>
+            </div>
+            <!-- testCalendar -->
+            <div class="row">
+                <iframe name="testCalendar_result"></iframe>
+                <form action="/jayjax/jj/test/testCalendar" method="POST" target="testCalendar_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testCalendar</button>
+                  a: <input type="text" class="form-control time-now" name="a">    
+                  b: <input type="text" class="form-control" name="b" value>
+                  c[0]: <input type="text" class="form-control time-now" name="c">
+                  c[1]: <input type="text" class="form-control time-now" name="c">
+                  e: <input type="text" class="form-control" name="e" value>
+                </form>
+            </div>
+            <!-- testUUID -->
+            <div class="row">
+                <iframe name="testUUID_result"></iframe>
+                <form action="/jayjax/jj/test/testUUID" method="POST" target="testUUID_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testUUID</button>
+                  a: <input type="text" class="form-control" name="a" value="91b694a0-3f83-4c1c-b998-2351705c002c">    
+                  b: <input type="text" class="form-control" name="b" value>
+                </form>
+            </div>
+            <!-- testClass -->
+            <div class="row">
+                <iframe name="testClass_result"></iframe>
+                <form action="/jayjax/jj/test/testClass" method="POST" target="testClass_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testClass</button>
+                  a: <input type="text" class="form-control" name="a" value="java.lang.Integer">    
+                  b: <input type="text" class="form-control" name="b" value>
+                </form>
+            </div>
             <!-- testAddContacts -->
             <div class="row">
                 <iframe name="testAddContacts_result"></iframe>
@@ -301,9 +381,20 @@
             Test.testGetContact('John Smith', '(123) 456-7890', 123, '579 Simple Street', 'Main City', 'AR', 17555, handleTest('testGetContact',results,'[object Object],[object Object]'));
             Test.testSessionVariable(handleTest('testSessionVariable',results,true));
             Test.testURL(3452,'Hello World',true,handleTest('testURL',results,true));
+            Test.testDate(new Date(),null,[new Date(),new Date()],[],null,handleTest('testDate',results,true));
+            Test.testTime(new Date(),null,[new Date(),new Date()],[],null,handleTest('testTime',results,true));
+            Test.testTimestamp(new Date(),null,[new Date(),new Date()],[],null,handleTest('testTimestamp',results,true));
+            Test.testSqlDate(new Date(),null,[new Date(),new Date()],[],null,handleTest('testSqlDate',results,true));
+            Test.testCalendar(new Date(),null,[new Date(),new Date()],[],null,handleTest('testCalendar',results,true));
+            Test.testUUID('91b694a0-3f83-4c1c-b998-2351705c002c',null,handleTest('testUUID',results,true));
+            Test.testClass('java.lang.Integer',null,handleTest('testClass',results,'java.lang.Long'));
+            Test.testJson({message:'Hello World',success:true},handleTest('testJson',results,true));
         }
         
-        $(function() {
+        $(function() 
+        {
+        	$('.time-now').val(new Date());
+        	
         	$('iframe').load(function() {
         		if (this.contentDocument) {
         			var pre = $(this.contentDocument).find('pre');

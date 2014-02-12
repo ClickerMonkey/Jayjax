@@ -1,25 +1,25 @@
 package org.magnos.jayjax.json.convert;
 
-import java.util.Set;
+import java.util.Collection;
 
 import org.magnos.jayjax.json.JsonArray;
 import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonValue;
 
 
-public class JsonConvertSet extends JsonConverter<Set<Object>, JsonArray>
+public class JsonConvertCollection extends JsonConverter<Collection<Object>, JsonArray>
 {
     
-    public static final JsonConvertSet INSTANCE = new JsonConvertSet();
+    public static final JsonConvertCollection INSTANCE = new JsonConvertCollection();
     
     @Override
-    public Set<Object> read( JsonArray value )
+    public Collection<Object> read( JsonArray value )
     {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public JsonArray write( Set<Object> value )
+    public JsonArray write( Collection<Object> value )
     {
         int n = value.size();
         JsonArray array = new JsonArray( new JsonValue[ n ] );

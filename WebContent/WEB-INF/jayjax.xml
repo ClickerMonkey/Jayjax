@@ -17,5 +17,13 @@
         <function action="/test/testMultipleUpload" method="POST" invoke="testMultipleUpload(uploadedFile)" />
         <function action="/test/testSessionVariable" method="POST" invoke="testSessionVariable($session[message])" />
         <function action="/test/testURL/(\d+)/([^/]+)/(true|false)" method="GET|POST" invoke="testURL(#1,#2,#3)" />
+        <function action="/test/testDate" method="POST" invoke="testDate(a,b,c,d,e)" />
+        <function action="/test/testTime" method="POST" invoke="testTime(a,b,c,d,e)" />
+        <function action="/test/testTimestamp" method="POST" invoke="testTimestamp(a,b,c,d,e)" />
+        <function action="/test/testSqlDate" method="POST" invoke="testSqlDate(a,b,c,d,e)" />
+        <function action="/test/testCalendar" method="POST" invoke="testCalendar(a,b,c,d,e)" />
+        <function action="/test/testUUID" method="POST" invoke="testUUID(a,b)" />
+        <function action="/test/testClass" method="POST" invoke="testClass(a,b)" />
+        <function action="/test/testJson" method="POST" invoke="testJson(json)" />
     </controller>
 </jayjax>
