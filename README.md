@@ -9,7 +9,7 @@ The easiest way to call your Java code from JavaScript or form submits.
 - Generates JavaScript for making asynchronous calls to defined methods.
 - Automatic serialization of objects, no configuration or coding required.
 - Single & Multiple File uploading.
-- Controller scopes, one instance per request, session, thread, or application.
+- Controller scopes. One instance per request, session, thread, or application.
 - Regular Expressions in actions for pretty URLs. i.e. `/user/(.+)`
 - Pass special variables with $variableName. i.e. `$request`, `$response`, `$session`, `$cookie[0]`, `$session[user]`, etc.
 - Validator invoked before method with all available information.
