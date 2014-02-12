@@ -36,7 +36,7 @@ public class MyController {
 ```
 #### JavaScript
 ```html
-<script src="/js/MyController"></script>
+<script src="/js/MyController.js"></script>
 <script>
   MyController.getUser(332, {
     success: function(user,status,xhr) {
