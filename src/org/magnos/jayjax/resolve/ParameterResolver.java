@@ -46,7 +46,7 @@ public class ParameterResolver extends ArgumentResolver
 
         if (json == null)
         {
-            return converter.missing();
+            return converter.missing( type );
         }
 
         switch (json.getType())
@@ -54,7 +54,7 @@ public class ParameterResolver extends ArgumentResolver
         case NULL:
             return null;
         case EMPTY:
-            return converter.empty();
+            return converter.empty( type );
         default:
             return converter.read( json );
         }

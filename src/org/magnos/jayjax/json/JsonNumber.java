@@ -17,6 +17,8 @@
 package org.magnos.jayjax.json;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -33,99 +35,122 @@ import java.io.IOException;
 public class JsonNumber implements JsonValue
 {
 
-    private Number value;
+	private Number value;
 
-    /**
-     * Instantiates a new JsonBoolean.
-     * 
-     * @param value
-     *        The initial value.
-     */
-    public JsonNumber( Number value )
-    {
-        this.value = value;
-    }
+	/**
+	 * Instantiates a new JsonBoolean.
+	 * 
+	 * @param value
+	 *        The initial value.
+	 */
+	public JsonNumber( Number value )
+	{
+		this.value = value;
+	}
 
-    /**
-     * Returns the current value.
-     * 
-     * @return The current value.
-     */
-    public Number get()
-    {
-        return value;
-    }
+	/**
+	 * Returns the current value.
+	 * 
+	 * @return The current value.
+	 */
+	public Number get()
+	{
+		return value;
+	}
 
-    /**
-     * Sets the new value.
-     * 
-     * @param value
-     *        The new value.
-     */
-    public void set( Number value )
-    {
-        this.value = value;
-    }
+	/**
+	 * Sets the new value.
+	 * 
+	 * @param value
+	 *        The new value.
+	 */
+	public void set( Number value )
+	{
+		this.value = value;
+	}
 
-    @Override
-    public Number getObject()
-    {
-        return value;
-    }
+	@Override
+	public Number getObject()
+	{
+		return value;
+	}
 
-    @Override
-    public JsonType getType()
-    {
-        return JsonType.NUMBER;
-    }
+	@Override
+	public JsonType getType()
+	{
+		return JsonType.NUMBER;
+	}
 
-    @Override
-    public String toJson()
-    {
-        return (value == null ? Json.NULL : value.toString());
-    }
+	@Override
+	public String toJson()
+	{
+		return (value == null ? Json.NULL : value.toString());
+	}
 
-    @Override
-    public void write( JsonWriter out ) throws IOException
-    {
-        out.write( value );
-    }
+	@Override
+	public void write( JsonWriter out ) throws IOException
+	{
+		out.write( value );
+	}
 
-    /**
-     * Parses a JsonNumber from the given String. If the given String is not a
-     * valid JSON number then this will return null.
-     * 
-     * @param x
-     *        The number to parse.
-     * @return
-     *         The parsed JsonNumber or null if the String was not valid.
-     */
-    public static JsonNumber fromString( String x )
-    {
-        // TODO custom parsing: [-][0-9]*(|.[0-9]+)(|[eE][+-]?[0-9]+)
+	/**
+	 * The regular expression for parsing a JSON number.
+	 * 
+	 * 1 = sign 2 = integer 4 = decimal 6 = exponent sign 7 = exponent number
+	 * 
+	 */
+	private static Pattern REGEX = Pattern.compile( "^(-)?(|[0-9]*)(|\\.([0-9]+))(|[eE](|[+-])([0-9]+))$" );
 
-        try
-        {
-            long v = Long.valueOf( x );
+	/**
+	 * Parses a JsonNumber from the given String. If the given String is not a
+	 * valid JSON number then this will return null.
+	 * 
+	 * @param x
+	 *        The number to parse.
+	 * @return The parsed JsonNumber or null if the String was not valid.
+	 */
+	public static JsonNumber fromString( String x )
+	{
+		if (x == null || x.length() == 0)
+		{
+			return null;
+		}
 
-            if (v <= Integer.MAX_VALUE && v >= Integer.MIN_VALUE)
-            {
-                return new JsonNumber( (int)v );
-            }
+		Matcher m = REGEX.matcher( x );
 
-            return new JsonNumber( v );
-        }
-        catch (Exception e1)
-        {
-            try
-            {
-                return new JsonNumber( Float.valueOf( x ) );
-            }
-            catch (Exception e2)
-            {
-                return null;
-            }
-        }
-    }
+		if (!m.matches())
+		{
+			return null;
+		}
+
+		int sign = m.group( 1 ) != null ? -1 : 1;
+		String integer = m.group( 2 );
+		String decimal = m.group( 4 );
+		String esign = m.group( 6 );
+		String escale = m.group( 7 );
+
+		if (decimal == null && (esign == null || esign.length() == 0 || esign.charAt( 0 ) == '+'))
+		{
+			long y = Long.parseLong( integer, 10 );
+			
+			if (escale != null)
+			{
+				int scale = Integer.parseInt( escale, 10 );
+				while (--scale >= 0)
+				{
+					y *= 10;
+				}
+			}
+			
+			if (y <= Integer.MAX_VALUE)
+			{
+				return new JsonNumber( (int)y * sign );
+			}
+			
+			return new JsonNumber( y * sign );
+		}
+
+		return new JsonNumber( Float.parseFloat( x ) );
+	}
 
 }

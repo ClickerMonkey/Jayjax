@@ -26,5 +26,6 @@
         <function action="/test/testClass" method="POST" invoke="testClass(a,b)" />
         <function action="/test/testJson" method="POST" invoke="testJson(json)" />
         <function action="/test/testMap" method="POST" invoke="testMap(a,b,c)" />
+        <function action="/test/testCheckbox" method="POST" invoke="testCheckbox(a,b,c)" />
     </controller>
 </jayjax>

@@ -53,7 +53,7 @@ public class ActionResolver extends ArgumentResolver
         case NULL:
             return null;
         case EMPTY:
-            return converter.empty();
+            return converter.empty( type );
         default:
             return converter.read( json );
         }

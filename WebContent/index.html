@@ -282,6 +282,22 @@
                   c: <input type="text" class="form-control" name="c" value>
                 </form>
             </div>
+            <!-- testCheckbox -->
+            <div class="row">
+                <iframe name="testCheckbox_result"></iframe>
+                <form action="/jayjax/jj/test/testCheckbox" method="POST" target="testCheckbox_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testCheckbox</button>
+                  a: <input type="checkbox" class="form-control" name="a" checked>
+                  b: <input type="checkbox" class="form-control" name="b">
+                </form>
+            </div>
+            <!-- testSessionVariable -->
+            <div class="row">
+                <iframe name="testSessionVariable_result"></iframe>
+                <form action="/jayjax/jj/test/testSessionVariable" method="POST" target="testSessionVariable_result" class="form-inline">
+                  <button type="submit" class="btn btn-default">testSessionVariable</button>
+                </form>
+            </div>
             <!-- testAddContacts -->
             <div class="row">
                 <iframe name="testAddContacts_result"></iframe>
@@ -330,13 +346,6 @@
             </div>
             <div class="row">
                  <iframe name="testMultipleUpload_result" style="width:100%; height:180px; margin:20px;"></iframe>
-            </div>
-            <!-- testSessionVariable -->
-            <div class="row">
-                <iframe name="testSessionVariable_result"></iframe>
-                <form action="/jayjax/jj/test/testSessionVariable" method="POST" target="testSessionVariable_result" class="form-inline">
-                  <button type="submit" class="btn btn-default">testSessionVariable</button>
-                </form>
             </div>
         </div>
         

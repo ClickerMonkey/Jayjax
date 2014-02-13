@@ -40,7 +40,7 @@ public abstract class JsonConvertMap<T extends Map<String, String>> extends Json
 	protected abstract T emptyMap();
 
 	@Override
-	public T missing()
+	public T missing(Class<?> expectedType)
 	{
 		return emptyMap();
 	}

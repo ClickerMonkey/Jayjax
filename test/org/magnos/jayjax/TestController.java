@@ -345,6 +345,15 @@ public class TestController
     	       b != null && b.size() == 0 &&
     	       c == null;
     }
+
+    // *NOT A JAVASCRIPT TEST*
+    public boolean testCheckbox(boolean a, boolean b, boolean c)
+    {
+    	return a == true &&
+    	       b == false &&
+    	       c == false;
+    }
+    
     
     /*
      * HELPER METHODS & CLASSES 

@@ -100,11 +100,30 @@ public class JsonConvertPrimitive
         }
     };
     
-    public static final JsonConverter<Boolean, JsonBoolean> BOOLEAN = new JsonConverter<Boolean, JsonBoolean>() {
-        public Boolean read( JsonBoolean value ) {
-            return value.get();
+    public static final JsonConverter<Boolean, JsonValue> BOOLEAN = new JsonConverter<Boolean, JsonValue>() {
+    	public Boolean missing(Class<?> expectedType) {
+    		return expectedType == boolean.class ? false : null;
+    	}
+    	public Boolean empty(Class<?> expectedType) {
+    		return expectedType == boolean.class ? false : null;
+    	}
+        public Boolean read( JsonValue value ) {
+        	switch (value.getType()) {
+        	case BOOLEAN:
+        		return ((JsonBoolean)value).get();
+        	case STRING:
+        		return !((JsonString)value).get().isEmpty();
+        	case NUMBER:
+        	case ARRAY:
+        	case OBJECT:
+        		return true;
+        	case EMPTY:
+        	case NULL:
+        		return false;
+        	}
+        	return null;
         }
-        public JsonBoolean write( Boolean value ) {
+        public JsonValue write( Boolean value ) {
             return new JsonBoolean( value );
         }
     };

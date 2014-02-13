@@ -36,7 +36,7 @@ public class JsonConvertArray<T> extends JsonConverter<T, JsonArray>
     }
 
     @Override
-    public T missing()
+    public T missing(Class<?> expectedType)
     {
         return (T) Array.newInstance( elementType, 0 );
     }

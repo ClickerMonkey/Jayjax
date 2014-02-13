@@ -19,12 +19,12 @@ package org.magnos.jayjax.json;
 public abstract class JsonConverter<T, JV extends JsonValue>
 {
 
-    public T missing()
+    public T missing(Class<?> expectedType)
     {
         return null;
     }
 
-    public T empty()
+    public T empty(Class<?> expectedType)
     {
         return null;
     }
