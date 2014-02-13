@@ -27,5 +27,6 @@
         <function action="/test/testJson" method="POST" invoke="testJson(json)" />
         <function action="/test/testMap" method="POST" invoke="testMap(a,b,c)" />
         <function action="/test/testCheckbox" method="POST" invoke="testCheckbox(a,b,c)" />
+        <function action="/test/test(Crazy)(REGEX|NOTREGEX)/((a)\d{1,2})" method="GET" invoke="testCrazyRegex(#1,#2,#4)" />
     </controller>
 </jayjax>

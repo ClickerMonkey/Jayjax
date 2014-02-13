@@ -400,6 +400,7 @@
             Test.testClass('java.lang.Integer',null,handleTest('testClass',results,'java.lang.Long'));
             Test.testJson({message:'Hello World',success:true},handleTest('testJson',results,true));
             Test.testMap({a:true,b:'Hi',c:4.5},{},null,handleTest('testMap',results,true));
+            Test.testCrazyRegex('Crazy','REGEX','a10',handleTest('testCrazyRegex',results,true));
         }
         
         $(function() 

@@ -354,6 +354,14 @@ public class TestController
     	       c == false;
     }
     
+    // Test.testCrazyRegex('Crazy','REGEX','a10');
+    public boolean testCrazyRegex(String a, String b, String c)
+    {
+    	return a != null && a.equals( "Crazy" ) &&
+    	       b != null && b.equals( "REGEX" ) &&
+    	       c != null && c.equals( "a" );
+    }
+    
     
     /*
      * HELPER METHODS & CLASSES 
