@@ -41,6 +41,8 @@ public class Jayjax
 
 	private static final ThreadLocal<Invocation> invocationLocal = new ThreadLocal<Invocation>();
 	
+	private static final List<JayjaxListener> listenerList = new ArrayList<JayjaxListener>();
+	
 	private static volatile boolean loaded;
 	
 	public static synchronized void initialize(ServletContext context) throws ServletException
@@ -50,7 +52,7 @@ public class Jayjax
 			try
 			{
 				InputStream in = context.getResourceAsStream( CONFIGURATION_FILE );
-				
+
 				try
 				{
 					XmlLoader.load( in );
@@ -167,6 +169,35 @@ public class Jayjax
     public static boolean hasSession()
     {
         return invocationLocal.get() != null;
+    }
+    
+    public static void addListener(JayjaxListener listener)
+    {
+    	listenerList.add( listener );
+    }
+    
+    public static void removeListener(JayjaxListener listener)
+    {
+    	listenerList.remove( listener );
+    }
+    
+    public static void notifyMessage(JayjaxMessage message, Throwable e)
+    {
+    	Invocation invocation = getInvocation();
+    	
+		for (JayjaxListener listener : listenerList)
+    	{
+			try
+	    	{
+				listener.onMessage( message, invocation, e );
+	    	}
+	    	catch (Throwable ex)
+	    	{
+	    		listener.onMessage( JayjaxMessage.LISTENER_ERROR, invocation, ex );
+	    	}
+    	}	
+    	
+    	throw new JayjaxException();
     }
 
 }

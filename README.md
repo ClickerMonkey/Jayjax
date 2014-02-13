@@ -97,24 +97,11 @@ public class MyController {
 ```
 
 #### TODO
-- Add a listener for all unexpected events
-  - Action does not map to a function
-  - Action not available in non-secure mode
-  - Type mismatch between what client sent and expected
-  - Error during deserialization
-  - Error during serialization
-  - Error during configuration parsing
-  - Error during controller instantiation
-  - Error during function
-  - Error during validation
-  - Error writing response
-  - Requested controller does not have a Javascript file
 - Add basic validators
   - Non-null arguments
   - Validator list
   - Authorization (OpenAuth?)
 - Testing
-  - More robust regular expression testing
   - Test ALL special variables
 - Type Annotation to use generic classes as in-parameters (can only be used as out since type information is not available)
 - Decide

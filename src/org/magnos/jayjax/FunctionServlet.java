@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.magnos.jayjax.json.Json;
 import org.magnos.jayjax.json.JsonConverter;
-import org.magnos.jayjax.json.JsonObject;
 import org.magnos.jayjax.json.JsonValue;
 import org.magnos.jayjax.json.convert.JsonConverterFactory;
 
@@ -51,6 +50,10 @@ public class FunctionServlet extends HttpServlet
 		{
 			handle( request, response, Function.REQUEST_METHOD_POST );	
 		}
+		catch (JayjaxException e)
+		{
+			// only thrown after a listener is notified of issue
+		}
 		catch (ServletException e)
 		{
 			throw e;
@@ -59,7 +62,7 @@ public class FunctionServlet extends HttpServlet
 		{
 			throw e;
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			throw new ServletException( e );
 		}
@@ -76,6 +79,10 @@ public class FunctionServlet extends HttpServlet
 		{
 			handle( request, response, Function.REQUEST_METHOD_GET );	
 		}
+		catch (JayjaxException e)
+		{
+			// only thrown after a listener is notified of issue
+		}
 		catch (ServletException e)
 		{
 			throw e;
@@ -84,7 +91,7 @@ public class FunctionServlet extends HttpServlet
 		{
 			throw e;
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			throw new ServletException( e );
 		}
@@ -96,57 +103,97 @@ public class FunctionServlet extends HttpServlet
 
 	protected void handle( HttpServletRequest request, HttpServletResponse response, int requestMethod ) throws Exception
 	{
+		Invocation invocation = new Invocation();
+		invocation.setRequest( request );
+		invocation.setResponse( response );
+		Jayjax.setInvocation( invocation );
+		
 		String path = request.getPathInfo();
-		JsonObject parameters = HttpJson.fromRequest( request );
-
+		
+		try
+		{
+			invocation.setParameters( HttpJson.fromRequest( request ) );	
+		}
+		catch (Throwable e)
+		{
+			Jayjax.notifyMessage( JayjaxMessage.PARSE_REQUEST_VALUES_ERROR, e );
+		}
+		
 		for (Function function : Jayjax.getFunctions())
 		{
 			Matcher matcher = function.getAction().matcher( path );
 
 			if (matcher.matches())
 			{
+				invocation.setMatcher( matcher );
+				invocation.setFunction( function );
+				
 			    if (function.isSecure() && !request.isSecure())
 			    {
-			        throw new ServletException( "The invoked function is marked secure only, but the connection is not secure" );
+			    	Jayjax.notifyMessage( JayjaxMessage.SECURE_FUNCTION_UNSECURE_CONNECTION, null );
 			    }
 			    
 			    if ((function.getRequestMethods() & requestMethod) == 0)
 			    {
-			        throw new ServletException( "The invoked function is not valid for method " + request.getMethod() );
+			    	Jayjax.notifyMessage( JayjaxMessage.WRONG_METHOD_FOR_FUNCTION, null );
 			    }
-			    
-				Invocation invocation = new Invocation();
-				invocation.setFunction( function );
-				invocation.setMatcher( matcher );
-				invocation.setRequest( request );
-				invocation.setResponse( response );
-				invocation.setParameters( parameters );
 
 				ArgumentResolver[] resolvers = function.getResolvers();
 
 				Object[] arguments = new Object[resolvers.length];
 				invocation.setArguments( arguments );
 				
-				Jayjax.setInvocation( invocation );
-
-				for (int i = 0; i < resolvers.length; i++)
+				try
 				{
-					arguments[i] = resolvers[i].getArgument( invocation );
+					for (int i = 0; i < resolvers.length; i++)
+					{
+						arguments[i] = resolvers[i].getArgument( invocation );
+					}	
+				}
+				catch (Throwable e)
+				{
+			    	Jayjax.notifyMessage( JayjaxMessage.BUILD_FUNCTION_ARGUMENTS_ERROR, e );
 				}
 
                 if (function.getValidator() != null)
                 {
-                    if (!function.getValidator().isValid( invocation ))
-                    {
-                        return;
-                    }
+                	try
+                	{
+                		if (!function.getValidator().isValid( invocation ))
+                        {
+                            return;
+                        }	
+                	}
+                	catch (Throwable e)
+                	{
+                		Jayjax.notifyMessage( JayjaxMessage.VALIDATION_ERROR, e );	
+                	}
                 }
 				
-				Object controller = Jayjax.getControllerInstance( function.getController(), request );
+                Object controller = null;
+                
+                try
+                {
+                	controller = Jayjax.getControllerInstance( function.getController(), request );	
+                }
+                catch (Throwable e)
+                {
+                	Jayjax.notifyMessage( JayjaxMessage.CONTROLLER_INSTANTIATION_ERROR, e );
+                }
 				
 				Method method = function.getMethod();
 				
-				Object result = method.invoke( controller, arguments );
+				Object result = null; 
+				
+				try
+				{
+					result = method.invoke( controller, arguments );	
+				}
+				catch (Throwable e)
+				{
+					Jayjax.notifyMessage( JayjaxMessage.FUNCTION_INVOCATION_ERROR, e );
+				}
+				
 				invocation.setResult( result );
 				
 				if (method.getReturnType() != Void.class)
@@ -155,23 +202,48 @@ public class FunctionServlet extends HttpServlet
                     
 					if (result == null)
 					{
-					    response.setContentLength( Json.NULL.length() );
-						response.getOutputStream().print( Json.NULL );
+						try
+						{
+						    response.setContentLength( Json.NULL.length() );
+							response.getOutputStream().print( Json.NULL );
+						}
+						catch (Throwable e)
+						{
+							Jayjax.notifyMessage( JayjaxMessage.RESPONSE_WRITING_ERROR, e );
+						}
 					}
 					else
 					{
-						JsonConverter<Object, JsonValue> converter = JsonConverterFactory.getConverter( (Class<Object>)result.getClass() );
-						JsonValue json = converter.write( result );
-						String jsonString = json.toJson();
+						String jsonString = "";
 						
-						response.setContentLength( jsonString.length() );
-						response.getOutputStream().print( jsonString );
+						try
+						{
+							JsonConverter<Object, JsonValue> converter = JsonConverterFactory.getConverter( (Class<Object>)result.getClass() );
+							JsonValue json = converter.write( result );
+							jsonString = json.toJson();	
+						}
+						catch (Throwable e)
+						{
+							Jayjax.notifyMessage( JayjaxMessage.SERIALIZATION_ERROR, e );
+						}
+
+						try
+						{
+							response.setContentLength( jsonString.length() );
+							response.getOutputStream().print( jsonString );	
+						}
+						catch (Throwable e)
+						{
+							Jayjax.notifyMessage( JayjaxMessage.RESPONSE_WRITING_ERROR, e );
+						}
 					}
 				}
 
-				break;
+				return;
 			}
 		}
+		
+		Jayjax.notifyMessage( JayjaxMessage.ACTION_DOES_NOT_MAP_TO_FUNCTION, null );
 	}
 
 }
