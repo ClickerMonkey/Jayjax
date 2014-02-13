@@ -123,7 +123,7 @@ public class JsonNumber implements JsonValue
 			return null;
 		}
 
-		int sign = m.group( 1 ) != null ? -1 : 1;
+		boolean negative = m.group( 1 ) != null;
 		String integer = m.group( 2 );
 		String decimal = m.group( 4 );
 		String esign = m.group( 6 );
@@ -144,10 +144,10 @@ public class JsonNumber implements JsonValue
 			
 			if (y <= Integer.MAX_VALUE)
 			{
-				return new JsonNumber( (int)y * sign );
+				return new JsonNumber( (int)(negative ? -y : y) );
 			}
 			
-			return new JsonNumber( y * sign );
+			return new JsonNumber( negative ? -y : y );
 		}
 
 		return new JsonNumber( Float.parseFloat( x ) );
