@@ -18,48 +18,28 @@ package org.magnos.jayjax.json.convert;
 
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.magnos.jayjax.json.JsonConverter;
 import org.magnos.jayjax.json.JsonNumber;
+import org.magnos.jayjax.json.JsonString;
 import org.magnos.jayjax.json.JsonValue;
 
 
 
 public class JsonConvertDate
 {
-
-	private static long getMillis(JsonValue json)
-	{
-		switch (json.getType()) 
-		{
-		case NUMBER:
-			return ((JsonNumber)json).get().longValue();
-		case STRING:
-			try {
-				String[] parts = json.getObject().toString().split( " " );
-				SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
-			    sdf.setTimeZone(TimeZone.getTimeZone(parts[5].substring(0,6)+":"+parts[5].substring(6)));
-			    return sdf.parse(parts[0]+" "+parts[1]+" "+parts[2]+" "+parts[3]+" "+parts[4]).getTime();  
-			} catch (ParseException e) {
-				throw new RuntimeException( e );
-			}
-		default:
-			throw new RuntimeException( "Invalid date: " + json.getObject().toString() );
-		}
-	}
 	
 	public static final JsonConverter<Date, JsonValue> DATE = new JsonConverter<Date, JsonValue>() {
 		public JsonValue write( Date value ) {
 			return new JsonNumber( value.getTime() );
 		}
 		public Date read( JsonValue value ) {
-			return new Date( getMillis( value ) );
+			return new Date( parse( value ) );
 		}
 	};
 
@@ -68,7 +48,7 @@ public class JsonConvertDate
 			return new JsonNumber( value.getTime() );
 		}
 		public Timestamp read( JsonValue value ) {
-			return new Timestamp( getMillis( value ) );
+			return new Timestamp( parse( value ) );
 		}
 	};
 
@@ -77,7 +57,7 @@ public class JsonConvertDate
 			return new JsonNumber( value.getTime() );
 		}
 		public Time read( JsonValue value ) {
-			return new Time( getMillis( value ) );
+			return new Time( parse( value ) );
 		}
 	};
 
@@ -86,7 +66,7 @@ public class JsonConvertDate
 			return new JsonNumber( value.getTime() );
 		}
 		public java.sql.Date read( JsonValue value ) {
-			return new java.sql.Date( getMillis( value ) );
+			return new java.sql.Date( parse( value ) );
 		}
 	};
 
@@ -96,9 +76,90 @@ public class JsonConvertDate
 		}
 		public Calendar read( JsonValue value ) {
 			Calendar cal = Calendar.getInstance();
-			cal.setTimeInMillis( getMillis( value ) );
+			cal.setTimeInMillis( parse( value ) );
 			return cal;
 		}
 	};
 
+	private static final Pattern TIMEZONE = Pattern.compile( "((gmt)?\\s?[+-]\\d{1,2}(\\s|$|:?\\d{2}))" );
+	private static final Pattern HOUR = Pattern.compile( "(^|[\\sT])(0?[0-9]|1[0-9]|2[0-3]):" ); 
+	private static final Pattern MINUTE = Pattern.compile( ":([0-5][0-9]):" );
+	private static final Pattern SECOND = Pattern.compile( ":([0-5][0-9])(?:\\s|\\.|$)" );
+	private static final Pattern MILLIS = Pattern.compile( "\\.([\\d]{2,6})" );
+	private static final Pattern DAY = Pattern.compile( "(\\s|/|-)([0-3]?[0-9])(\\s|/|T)" );
+	private static final Pattern YEAR = Pattern.compile( "(^|[\\s/])(\\d{2}$|\\d{4})($|[\\s-])" );	
+	private static final Pattern PM = Pattern.compile( "\\s(pm)(\\s|$)" );
+	
+	private static final Pattern[] MONTHS = 
+	{
+		Pattern.compile( "jan(uary)?|(^|\\s)0?1/|-(01|1)-" ),
+		Pattern.compile( "feb(ruary)?|(^|\\s)0?2/|-(02|2)-" ),
+		Pattern.compile( "mar(ch)?|(^|\\s)0?3/|-(03|3)-" ),
+		Pattern.compile( "apr(il)?|(^|\\s)0?4/|-(04|4)-" ),
+		Pattern.compile( "may|(^|\\s)0?5/|-(05|5)-" ),
+		Pattern.compile( "june?|(^|\\s)0?6/|-(06|6)-" ),
+		Pattern.compile( "july?|(^|\\s)0?7/|-(07|7)-" ),
+		Pattern.compile( "aug(ust)?|(^|\\s)0?8/|-(08|8)-" ),
+		Pattern.compile( "sep(tember)?|(^|\\s)0?9/|-(09|9)-" ),
+		Pattern.compile( "oct(ober)?|(^|\\s)10/|-10-" ),
+		Pattern.compile( "nov(ember)?|(^|\\s)11/|-11-" ),
+		Pattern.compile( "dec(ember)?|(^|\\s)12/|-12-" )
+	};
+	
+	private static int find(Pattern p, int group, String x, int missingValue) 
+	{
+		return Integer.parseInt( find(p, group, x, String.valueOf(missingValue)), 10 );
+	}
+	
+	private static String find(Pattern p, int group, String x, String missingValue) 
+	{
+		Matcher m = p.matcher( x );
+		return m.find() ? m.group(group) : missingValue;
+	}
+	
+	private static int indexMatch(Pattern[] patterns, String x, int notFound) 
+	{
+		for (int i = 0; i < patterns.length; i++) 
+		{
+			if (patterns[i].matcher( x ).find()) 
+			{
+				return i;
+			}
+		}
+		
+		return notFound;
+	}
+	
+	public static long parse(JsonValue json)
+	{
+		switch (json.getType()) 
+		{
+		case NUMBER:
+			return ((JsonNumber)json).get().longValue();
+			
+		case STRING:
+			String x = ((JsonString)json).get().toLowerCase();
+
+			Calendar c = Calendar.getInstance();
+			c.set( Calendar.HOUR, 		 find( HOUR, 2, x, 0 ) + (find( PM, 1, x, null ) != null ? 12 : 0) );
+			c.set( Calendar.MINUTE, 	 find( MINUTE, 1, x, 0 ) );
+			c.set( Calendar.SECOND,		 find( SECOND, 1, x, 0 ) );
+			c.set( Calendar.MILLISECOND, find( MILLIS, 1, x, 0 ) );
+			c.set( Calendar.MONTH, indexMatch( MONTHS, x, c.get( Calendar.MONTH ) ) );
+			c.set( Calendar.DATE, 		 find( DAY, 2, x, c.get( Calendar.DATE ) ) );
+			c.set( Calendar.YEAR, 		 find( YEAR, 2, x, c.get( Calendar.YEAR ) ) );
+
+			String timezone = find( TIMEZONE, 1, x, null );
+			if (timezone != null)
+			{
+				c.setTimeZone( TimeZone.getTimeZone( timezone ) );
+			}
+
+			return c.getTimeInMillis();
+			
+		default:
+			throw new RuntimeException( "Invalid date: " + json.getObject().toString() );
+		}
+	}
+	
 }
