@@ -18,6 +18,7 @@ package org.magnos.jayjax.json;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -130,6 +131,19 @@ public class TestJsonFormat
         JsonObject object = (JsonObject)value;
         
         assertEquals( 4, object.get( "hello" ) );
+    }
+    
+    @Test
+    public void testMultiple() throws IOException
+    {
+    	String json = "[1,2,3]{\"name\":true}";
+    	ByteArrayInputStream in = new ByteArrayInputStream( json.getBytes() );
+    	
+    	JsonValue a = Json.valueOf( in );
+    	JsonValue b = Json.valueOf( in );
+    	
+    	System.out.println( a.toJson() );
+    	System.out.println( b.toJson() );
     }
     
 }

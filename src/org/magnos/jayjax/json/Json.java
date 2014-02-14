@@ -16,12 +16,11 @@
 
 package org.magnos.jayjax.json;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 
 import org.magnos.jayjax.io.CharacterSet;
+import org.magnos.jayjax.io.SimpleReader;
 
 
 /**
@@ -58,12 +57,13 @@ public class Json
 
     public static JsonValue valueOf( String x ) throws IOException
     {
-        return format.readValueFromStream( new StringReader( x ) );
+        return format.readValueFromStream( SimpleReader.forString( x ) );
     }
 
     public static <J extends JsonValue> J valueOf( String x, Class<J> expectedType ) throws IOException
     {
-        return (J)format.readValueFromStream( new StringReader( x ) );
+        return (J)format.readValueFromStream( SimpleReader.forString( x ) );
+
     }
 
     public static JsonValue valueOf( InputStream in ) throws IOException
@@ -71,14 +71,19 @@ public class Json
         return format.readValueFromStream( in );
     }
 
+    public static JsonValue valueOf( SimpleReader reader ) throws IOException
+    {
+        return format.readValueFromStream( reader );
+    }
+
     public static JsonValue valueOf( byte[] x ) throws IOException
     {
-        return format.readValueFromStream( new ByteArrayInputStream( x ) );
+        return format.readValueFromStream( SimpleReader.forBytes( x ) );
     }
 
     public static <J extends JsonValue> J valueOf( byte[] x, Class<J> expectedType ) throws IOException
     {
-        return (J)format.readValueFromStream( new ByteArrayInputStream( x ) );
+        return (J)format.readValueFromStream( SimpleReader.forBytes( x ) );
     }
 
     public static String toString( JsonValue value )

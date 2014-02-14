@@ -16,16 +16,14 @@
 
 package org.magnos.jayjax.json;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.magnos.jayjax.io.CharacterReader;
+import org.magnos.jayjax.io.SimpleReader;
 
 
 /**
@@ -58,17 +56,17 @@ public class JsonFormat
 
 	public JsonValue readValueFromStream( InputStream in ) throws IOException
 	{
-		return readValueFromStream( in, DEFAULT_CHARSET );
+		return readValueFromStream( SimpleReader.forStream( in ) );
 	}
 
 	public JsonValue readValueFromStream( InputStream in, String charsetName ) throws IOException
 	{
-		return readValueFromStream( new BufferedReader( new InputStreamReader( in, charsetName ) ) );
+		return readValueFromStream( SimpleReader.forStream( in, charsetName ) ); 
 	}
 
-	public JsonValue readValueFromStream( Reader reader ) throws IOException
+	public JsonValue readValueFromStream( SimpleReader reader ) throws IOException
 	{
-		return readValue( new CharacterReader( reader ), true, true );
+		return readValue( new CharacterReader( reader ), true, true ); 
 	}
 
 	private JsonValue readValue( CharacterReader in, boolean readNext, boolean root ) throws IOException

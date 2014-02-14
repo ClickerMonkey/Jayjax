@@ -17,7 +17,6 @@
 package org.magnos.jayjax.io;
 
 import java.io.IOException;
-import java.io.Reader;
 
 
 /**
@@ -62,7 +61,7 @@ public class CharacterReader
 	 */
 	public static final CharacterSet SET_HEX = new CharacterSet( new char[][] { { '0', '9' }, { 'a', 'f' }, { 'A', 'F' } } );
 
-	public Reader in;
+	public SimpleReader in;
 	public StringBuilder read;
 	public int data;
 	public int line;
@@ -76,7 +75,7 @@ public class CharacterReader
 	 * @param in
 	 *        The reader to take input from.
 	 */
-	public CharacterReader( Reader in )
+	public CharacterReader( SimpleReader in )
 	{
 		this.in = in;
 		this.read = new StringBuilder();
@@ -213,13 +212,13 @@ public class CharacterReader
 	{
 		StringBuilder out = new StringBuilder();
 
-		in.mark( READLIMIT );
-
 		if (includeCurrent)
 		{
 			out.append( (char)data );
 		}
 
+		in.mark( READLIMIT );
+		
 		while (readData() != NO_DATA && !stop.has( data ))
 		{
 			if (readAsCharacter)
@@ -230,14 +229,14 @@ public class CharacterReader
 			{
 				out.append( (char)data );
 			}
-
+			
 			in.mark( READLIMIT );
 		}
 
 		if (backup && stop.has( data ))
 		{
 			unreadData();
-
+			
 			in.reset();
 		}
 
@@ -295,8 +294,9 @@ public class CharacterReader
 
 	/**
 	 * Un-reads the last character read.
+	 * @throws IOException 
 	 */
-	public void unreadData()
+	public void unreadData() throws IOException
 	{
 		if (data == NEWLINE)
 		{
