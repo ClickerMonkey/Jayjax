@@ -108,7 +108,9 @@ public class JsonConvertDate
 	
 	private static int find(Pattern p, int group, String x, int missingValue) 
 	{
-		return Integer.parseInt( find(p, group, x, String.valueOf(missingValue)), 10 );
+		String found = find(p, group, x, null);
+		
+		return found == null ? missingValue : Integer.parseInt( found, 10 );
 	}
 	
 	private static String find(Pattern p, int group, String x, String missingValue) 
