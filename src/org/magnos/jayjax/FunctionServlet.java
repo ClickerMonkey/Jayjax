@@ -26,9 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.magnos.jayjax.json.Json;
-import org.magnos.jayjax.json.JsonConverter;
+import org.magnos.jayjax.json.JsonConverters;
 import org.magnos.jayjax.json.JsonValue;
-import org.magnos.jayjax.json.convert.JsonConverterFactory;
 
 
 public class FunctionServlet extends HttpServlet
@@ -218,8 +217,7 @@ public class FunctionServlet extends HttpServlet
 						
 						try
 						{
-							JsonConverter<Object, JsonValue> converter = JsonConverterFactory.getConverter( (Class<Object>)result.getClass() );
-							JsonValue json = converter.write( result );
+							JsonValue json = JsonConverters.convert( result );
 							jsonString = json.toJson();	
 						}
 						catch (Throwable e)

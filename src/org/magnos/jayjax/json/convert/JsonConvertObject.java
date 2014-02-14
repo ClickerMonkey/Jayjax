@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.magnos.jayjax.json.JsonConverter;
+import org.magnos.jayjax.json.JsonConverters;
 import org.magnos.jayjax.json.JsonObject;
 import org.magnos.jayjax.json.JsonValue;
 
@@ -140,7 +141,7 @@ public class JsonConvertObject<T> extends JsonConverter<T, JsonObject>
             }
             else
             {
-                converters[i] = JsonConverterFactory.getConverter( type );
+                converters[i] = JsonConverters.getConverter( type );
             }
         }
         

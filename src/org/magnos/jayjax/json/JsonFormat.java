@@ -17,13 +17,10 @@
 package org.magnos.jayjax.json;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.magnos.jayjax.io.CharacterReader;
-import org.magnos.jayjax.io.SimpleReader;
 
 
 /**
@@ -45,8 +42,6 @@ import org.magnos.jayjax.io.SimpleReader;
 public class JsonFormat
 {
 
-    public static final String DEFAULT_CHARSET = Charset.defaultCharset().name();
-    
 	/**
 	 * Instantiates a new JsonFormat.
 	 */
@@ -54,19 +49,9 @@ public class JsonFormat
 	{
 	}
 
-	public JsonValue readValueFromStream( InputStream in ) throws IOException
+	public JsonValue readValueFromStream( CharacterReader reader ) throws IOException
 	{
-		return readValueFromStream( SimpleReader.forStream( in ) );
-	}
-
-	public JsonValue readValueFromStream( InputStream in, String charsetName ) throws IOException
-	{
-		return readValueFromStream( SimpleReader.forStream( in, charsetName ) ); 
-	}
-
-	public JsonValue readValueFromStream( SimpleReader reader ) throws IOException
-	{
-		return readValue( new CharacterReader( reader ), true, true ); 
+		return readValue( reader, true, true ); 
 	}
 
 	private JsonValue readValue( CharacterReader in, boolean readNext, boolean root ) throws IOException
@@ -100,11 +85,11 @@ public class JsonFormat
         if (value == null)
         {
             value = JsonNumber.fromString( valueString );
-        }
 
-        if (value == null)
-        {
-            value = new JsonString( valueString );
+            if (value == null)
+            {
+                value = new JsonString( valueString );
+            }
         }
 		
 		return value;

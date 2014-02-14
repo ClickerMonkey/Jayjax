@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.magnos.jayjax.io.CharacterReader;
 import org.magnos.jayjax.io.CharacterSet;
-import org.magnos.jayjax.io.SimpleReader;
 import org.magnos.jayjax.json.Json;
 import org.magnos.jayjax.json.JsonArray;
 import org.magnos.jayjax.json.JsonEmpty;
@@ -54,7 +53,7 @@ public class HttpJson
 
     protected static void populateJsonValue( JsonValue destination, String name, String... values ) throws IOException
     {
-        CharacterReader reader = new CharacterReader( SimpleReader.forString( name ) );
+        CharacterReader reader = CharacterReader.forString( name );
 
         populateJsonValue( destination, 0, reader.readUntil( SET_NAME_END, false, false, true ), reader, values );
     }

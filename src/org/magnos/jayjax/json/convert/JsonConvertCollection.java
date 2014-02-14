@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.magnos.jayjax.json.JsonArray;
 import org.magnos.jayjax.json.JsonConverter;
+import org.magnos.jayjax.json.JsonConverters;
 import org.magnos.jayjax.json.JsonValue;
 
 
@@ -45,7 +46,7 @@ public class JsonConvertCollection extends JsonConverter<Collection<Object>, Jso
         {
         	if (e != null)
             {
-                JsonConverter<Object, JsonValue> converter = JsonConverterFactory.getConverter( (Class<Object>)e.getClass() );
+                JsonConverter<Object, JsonValue> converter = JsonConverters.getConverter( e.getClass() );
                 
                 array.set( index, converter.write( e ) );
             }

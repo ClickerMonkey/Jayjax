@@ -18,11 +18,10 @@ package org.magnos.jayjax.json;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.junit.Test;
-
+import org.magnos.jayjax.io.CharacterReader;
 
 public class TestJsonFormat
 {
@@ -137,10 +136,10 @@ public class TestJsonFormat
     public void testMultiple() throws IOException
     {
     	String json = "[1,2,3]{\"name\":true}";
-    	ByteArrayInputStream in = new ByteArrayInputStream( json.getBytes() );
+    	CharacterReader reader = CharacterReader.forString( json );
     	
-    	JsonValue a = Json.valueOf( in );
-    	JsonValue b = Json.valueOf( in );
+    	JsonValue a = Json.valueOf( reader );
+    	JsonValue b = Json.valueOf( reader );
     	
     	System.out.println( a.toJson() );
     	System.out.println( b.toJson() );

@@ -24,8 +24,8 @@ import org.magnos.jayjax.ArgumentResolver;
 import org.magnos.jayjax.Invocation;
 import org.magnos.jayjax.json.Json;
 import org.magnos.jayjax.json.JsonConverter;
+import org.magnos.jayjax.json.JsonConverters;
 import org.magnos.jayjax.json.JsonValue;
-import org.magnos.jayjax.json.convert.JsonConverterFactory;
 
 
 public class ActionResolver extends ArgumentResolver
@@ -39,7 +39,7 @@ public class ActionResolver extends ArgumentResolver
         super( name, type );
 
         this.group = group;
-        this.converter = JsonConverterFactory.getConverter( (Class<Object>)type );
+        this.converter = JsonConverters.getConverter( type );
     }
 
     @Override

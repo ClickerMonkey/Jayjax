@@ -17,6 +17,11 @@
 package org.magnos.jayjax.io;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 
 /**
@@ -26,7 +31,7 @@ import java.io.IOException;
  * @author Philip Diffenderfer
  * 
  */
-public class CharacterReader
+public abstract class CharacterReader
 {
 
 	public static final char NEWLINE = '\n';
@@ -61,7 +66,6 @@ public class CharacterReader
 	 */
 	public static final CharacterSet SET_HEX = new CharacterSet( new char[][] { { '0', '9' }, { 'a', 'f' }, { 'A', 'F' } } );
 
-	public SimpleReader in;
 	public StringBuilder read;
 	public int data;
 	public int line;
@@ -75,12 +79,15 @@ public class CharacterReader
 	 * @param in
 	 *        The reader to take input from.
 	 */
-	public CharacterReader( SimpleReader in )
+	public CharacterReader()
 	{
-		this.in = in;
 		this.read = new StringBuilder();
 	}
-
+	
+	protected abstract int read() throws IOException;
+	protected abstract void mark(int readLimit) throws IOException;
+	protected abstract void reset() throws IOException;
+	
 	/**
 	 * Parses a single character from the current character (data). If escapable
 	 * is true and the current character is an escape character, then possible
@@ -217,7 +224,7 @@ public class CharacterReader
 			out.append( (char)data );
 		}
 
-		in.mark( READLIMIT );
+		mark( READLIMIT );
 		
 		while (readData() != NO_DATA && !stop.has( data ))
 		{
@@ -230,14 +237,14 @@ public class CharacterReader
 				out.append( (char)data );
 			}
 			
-			in.mark( READLIMIT );
+			mark( READLIMIT );
 		}
 
 		if (backup && stop.has( data ))
 		{
 			unreadData();
 			
-			in.reset();
+			reset();
 		}
 
 		return out.toString();
@@ -269,7 +276,7 @@ public class CharacterReader
 	 */
 	public int readData() throws IOException
 	{
-		data = in.read();
+		data = read();
 
 		character++;
 
@@ -357,6 +364,138 @@ public class CharacterReader
 	    while (readData() != NO_DATA);
 	    
 	    return read.toString();
+	}
+	
+	private static abstract class MemoryReader extends CharacterReader
+	{
+		protected abstract int length();
+		protected abstract char charAt(int i);
+		
+		protected int pos;
+		protected int mark;
+		
+		@Override
+		protected int read() throws IOException
+		{
+			return pos == length() ? -1 : charAt( pos++ );
+		}
+
+		@Override
+		protected void mark( int readLimit ) throws IOException
+		{
+			mark = pos;
+		}
+
+		@Override
+		protected void reset() throws IOException
+		{
+			pos = mark;
+		}
+	}
+	
+	private static abstract class StreamReader extends CharacterReader
+	{
+		private int[] lookback = {};
+		private int head;
+		private int tail;
+
+		protected abstract int streamRead() throws IOException;
+		
+		@Override
+		protected int read() throws IOException
+		{
+			if (head < tail)
+			{
+				return lookback[head++];
+			}
+
+			int i = streamRead();
+
+			if (tail < lookback.length)
+			{
+				lookback[tail++] = i;
+			}
+
+			return i;
+		}
+		
+		@Override
+		public void mark( int readAheadLimit ) throws IOException
+		{
+			if (lookback.length < readAheadLimit)
+			{
+				lookback = Arrays.copyOf( lookback, readAheadLimit );
+			}
+
+			tail = 0;
+			head = lookback.length;
+		}
+
+		@Override
+		public void reset() throws IOException
+		{
+			head = 0;
+			tail = lookback.length;
+		}
+	}
+	
+	public static CharacterReader forString(final CharSequence x)
+	{
+		return new MemoryReader() {
+			protected int length() {
+				return x.length();
+			}
+			protected char charAt( int i ) {
+				return x.charAt( i );
+			}
+		};
+	}
+	
+	public static CharacterReader forBytes(final byte[] x)
+	{
+		return new MemoryReader() {
+			protected int length() {
+				return x.length;
+			}
+			protected char charAt( int i ) {
+				return (char)(x[ i ] & 0xFF);
+			}
+		};
+	}
+	
+	public static CharacterReader forChars(final char[] x)
+	{
+		return new MemoryReader() {
+			protected int length() {
+				return x.length;
+			}
+			protected char charAt( int i ) {
+				return x[i];
+			}
+		};
+	}
+	
+	public static CharacterReader forReader(final Reader reader)
+	{
+		return new StreamReader() {
+			protected int streamRead() throws IOException {
+				return reader.read();
+			}
+		};
+	}
+	
+	public static CharacterReader forStream(final InputStream in)
+	{
+		return new StreamReader() {
+			protected int streamRead() throws IOException {
+				return in.read();
+			}
+		};
+	}
+	
+	public static CharacterReader forStream(InputStream in, String charsetName) throws UnsupportedEncodingException
+	{
+		return forReader( new InputStreamReader( in, charsetName ) );
 	}
 
 }

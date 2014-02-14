@@ -20,6 +20,7 @@ import java.lang.reflect.Array;
 
 import org.magnos.jayjax.json.JsonArray;
 import org.magnos.jayjax.json.JsonConverter;
+import org.magnos.jayjax.json.JsonConverters;
 import org.magnos.jayjax.json.JsonValue;
 
 
@@ -32,7 +33,7 @@ public class JsonConvertArray<T> extends JsonConverter<T, JsonArray>
     public JsonConvertArray(Class<?> elementType)
     {
         this.elementType = elementType;
-        this.elementConverter = JsonConverterFactory.getConverter( (Class<Object>)elementType );
+        this.elementConverter = JsonConverters.getConverter( elementType );
     }
 
     @Override
