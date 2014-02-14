@@ -33,6 +33,8 @@ import org.magnos.jayjax.ControllerScope;
 import org.magnos.jayjax.Function;
 import org.magnos.jayjax.Jayjax;
 import org.magnos.jayjax.Validator;
+import org.magnos.jayjax.io.CharacterReader;
+import org.magnos.jayjax.io.CharacterSet;
 import org.magnos.jayjax.resolve.ActionResolver;
 import org.magnos.jayjax.resolve.ParameterResolver;
 import org.magnos.jayjax.resolve.PartArrayResolver;
@@ -84,7 +86,7 @@ public class XmlLoader
 		}
 	}
 
-	private static void loadController( Element e, Map<String, Validator> validatorMap ) throws NoSuchMethodException, SecurityException, ClassNotFoundException
+	private static void loadController( Element e, Map<String, Validator> validatorMap ) throws NoSuchMethodException, SecurityException, ClassNotFoundException, IOException
 	{
 		Controller controller = new Controller();
 		controller.setName( Xml.getAttribute( e, "name", null, true ) );
@@ -113,7 +115,7 @@ public class XmlLoader
 		Jayjax.addController( controller );
 	}
 
-	private static Function loadFunction( Element e, Controller controller, Map<String, Validator> validatorMap )
+	private static Function loadFunction( Element e, Controller controller, Map<String, Validator> validatorMap ) throws IOException
 	{
 		Function f = new Function();
 
@@ -122,6 +124,7 @@ public class XmlLoader
 		// Action
 		f.setGivenAction( Xml.getAttribute( e, "action", null, true ) );
 		f.setAction( Pattern.compile( f.getGivenAction() ) );
+		f.setActionPrefix( getExpressionlessMatch( f.getGivenAction() ) );
 
 		// Method
 		f.setGivenMethod( Xml.getAttribute( e, "method", null, true ) );
@@ -232,6 +235,13 @@ public class XmlLoader
 	    {
 	        throw new RuntimeException( ex );
 	    }
+	}
+	
+	private static final CharacterSet SPECIAL_CHARS = new CharacterSet( '\\', '^', '$', '.', '|', '?', '*', '+', '(', ')', '[', '{' );
+	
+	private static String getExpressionlessMatch(String x) throws IOException
+	{
+		return CharacterReader.forString( x ).readUntil( SPECIAL_CHARS, false, false, false );
 	}
 
 }

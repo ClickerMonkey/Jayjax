@@ -407,6 +407,10 @@
         {
         	$('.time-now').val(new Date());
         	
+        	$('input[type="submit"]').click(function() {
+        		$('.time-now').val(new Date());	
+        	});
+        	
         	$('iframe').load(function() {
         		if (this.contentDocument) {
         			var pre = $(this.contentDocument).find('pre');

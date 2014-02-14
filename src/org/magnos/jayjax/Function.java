@@ -33,6 +33,7 @@ public class Function
 
 	private Controller controller;
 	private Pattern action;
+	private String actionPrefix;
 	private Method method;
 	private ArgumentResolver[] resolvers;
 	private Validator validator;
@@ -160,4 +161,14 @@ public class Function
 		this.action = action;
 	}
 
+	public String getActionPrefix()
+	{
+		return actionPrefix;
+	}
+
+	public void setActionPrefix( String actionPrefix )
+	{
+		this.actionPrefix = actionPrefix;
+	}
+	
 }

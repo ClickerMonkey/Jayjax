@@ -81,29 +81,29 @@ public class JsonConvertDate
 		}
 	};
 
-	private static final Pattern TIMEZONE = Pattern.compile( "((gmt)?\\s?[+-]\\d{1,2}(\\s|$|:?\\d{2}))" );
+	private static final Pattern TIMEZONE = Pattern.compile( "((GMT)?\\s?[+-]\\d{1,2}(\\s|$|:?\\d{2}))" );
 	private static final Pattern HOUR = Pattern.compile( "(^|[\\sT])(0?[0-9]|1[0-9]|2[0-3]):" ); 
 	private static final Pattern MINUTE = Pattern.compile( ":([0-5][0-9]):" );
 	private static final Pattern SECOND = Pattern.compile( ":([0-5][0-9])(?:\\s|\\.|$)" );
 	private static final Pattern MILLIS = Pattern.compile( "\\.([\\d]{2,6})" );
 	private static final Pattern DAY = Pattern.compile( "(\\s|/|-)([0-3]?[0-9])(\\s|/|T)" );
 	private static final Pattern YEAR = Pattern.compile( "(^|[\\s/])(\\d{2}$|\\d{4})($|[\\s-])" );	
-	private static final Pattern PM = Pattern.compile( "\\s(pm)(\\s|$)" );
+	private static final Pattern PM = Pattern.compile( "\\s(PM)(\\s|$)" );
 	
 	private static final Pattern[] MONTHS = 
 	{
-		Pattern.compile( "jan(uary)?|(^|\\s)0?1/|-(01|1)-" ),
-		Pattern.compile( "feb(ruary)?|(^|\\s)0?2/|-(02|2)-" ),
-		Pattern.compile( "mar(ch)?|(^|\\s)0?3/|-(03|3)-" ),
-		Pattern.compile( "apr(il)?|(^|\\s)0?4/|-(04|4)-" ),
-		Pattern.compile( "may|(^|\\s)0?5/|-(05|5)-" ),
-		Pattern.compile( "june?|(^|\\s)0?6/|-(06|6)-" ),
-		Pattern.compile( "july?|(^|\\s)0?7/|-(07|7)-" ),
-		Pattern.compile( "aug(ust)?|(^|\\s)0?8/|-(08|8)-" ),
-		Pattern.compile( "sep(tember)?|(^|\\s)0?9/|-(09|9)-" ),
-		Pattern.compile( "oct(ober)?|(^|\\s)10/|-10-" ),
-		Pattern.compile( "nov(ember)?|(^|\\s)11/|-11-" ),
-		Pattern.compile( "dec(ember)?|(^|\\s)12/|-12-" )
+		Pattern.compile( "JAN(UARY)?|(^|\\s)0?1/|-(01|1)-" ),
+		Pattern.compile( "FEB(RUARY)?|(^|\\s)0?2/|-(02|2)-" ),
+		Pattern.compile( "MAR(CH)?|(^|\\s)0?3/|-(03|3)-" ),
+		Pattern.compile( "APR(IL)?|(^|\\s)0?4/|-(04|4)-" ),
+		Pattern.compile( "MAY|(^|\\s)0?5/|-(05|5)-" ),
+		Pattern.compile( "JUNE?|(^|\\s)0?6/|-(06|6)-" ),
+		Pattern.compile( "JULY?|(^|\\s)0?7/|-(07|7)-" ),
+		Pattern.compile( "AUG(UST)?|(^|\\s)0?8/|-(08|8)-" ),
+		Pattern.compile( "SEP(TEMBER)?|(^|\\s)0?9/|-(09|9)-" ),
+		Pattern.compile( "OCT(OBER)?|(^|\\s)10/|-10-" ),
+		Pattern.compile( "NOV(EMBER)?|(^|\\s)11/|-11-" ),
+		Pattern.compile( "DEC(EMBER)?|(^|\\s)12/|-12-" )
 	};
 	
 	private static int find(Pattern p, int group, String x, int missingValue) 
@@ -138,10 +138,10 @@ public class JsonConvertDate
 			return ((JsonNumber)json).get().longValue();
 			
 		case STRING:
-			String x = ((JsonString)json).get().toLowerCase();
+			String x = ((JsonString)json).get().toUpperCase();
 
 			Calendar c = Calendar.getInstance();
-			c.set( Calendar.HOUR, 		 find( HOUR, 2, x, 0 ) + (find( PM, 1, x, null ) != null ? 12 : 0) );
+			c.set( Calendar.HOUR_OF_DAY, find( HOUR, 2, x, 0 ) + (find( PM, 1, x, null ) != null ? 12 : 0) );
 			c.set( Calendar.MINUTE, 	 find( MINUTE, 1, x, 0 ) );
 			c.set( Calendar.SECOND,		 find( SECOND, 1, x, 0 ) );
 			c.set( Calendar.MILLISECOND, find( MILLIS, 1, x, 0 ) );

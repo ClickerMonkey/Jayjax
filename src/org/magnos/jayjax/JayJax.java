@@ -18,8 +18,14 @@ package org.magnos.jayjax;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -34,7 +40,10 @@ public class Jayjax
 
 	public static final String CONFIGURATION_FILE = "/WEB-INF/jayjax.xml";
 	
+	private static Pattern functionPrefixPattern;
 	private static final List<Function> functions = new ArrayList<Function>();
+	private static final ConcurrentHashMap<String, List<Function>> functionPrefixMap = new ConcurrentHashMap<String, List<Function>>();
+	
 	private static final ConcurrentHashMap<String, Controller> controllers = new ConcurrentHashMap<String, Controller>();
 	private static final ConcurrentHashMap<String, Object> controllerCacheApplication = new ConcurrentHashMap<String, Object>();
 	private static final ConcurrentHashMap<String, ThreadLocal<Object>> controllerCacheThread = new ConcurrentHashMap<String, ThreadLocal<Object>>();
@@ -62,6 +71,8 @@ public class Jayjax
 					in.close();
 				}
 				
+				prepareFunctions();
+				
 				loaded = true;
 			}
 			catch (Exception e)
@@ -78,7 +89,20 @@ public class Jayjax
 	
 	public static void addController( final Controller controller )
 	{
-		functions.addAll( controller.getFunctions() );
+		for (Function f : controller.getFunctions())
+		{
+			List<Function> similar = functionPrefixMap.get( f.getActionPrefix() );
+			
+			if (similar == null)
+			{
+				similar = new ArrayList<Function>();
+				functionPrefixMap.put( f.getActionPrefix(), similar );
+			}
+			
+			similar.add( f );
+			
+			functions.add( f );
+		}
 		
 		controllers.put( controller.getName(), controller );
 		
@@ -129,14 +153,91 @@ public class Jayjax
 		return null;
 	}
 
+	public static void prepareFunctions()
+	{
+		Set<String> prefixes = new HashSet<String>();
+		
+		for (Function f : functions)
+		{
+			prefixes.add( f.getActionPrefix() );
+		}
+		
+		List<String> prefixesOrdered = new ArrayList<String>();
+		prefixesOrdered.addAll( prefixes );
+		Collections.sort( prefixesOrdered, new Comparator<String>() {
+			public int compare( String a, String b ) {
+				return b.length() - a.length();
+			}
+		});
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append( "(" );
+		
+		for (String prefix : prefixesOrdered)
+		{
+			if (sb.length() > 1)
+			{
+				sb.append( "|" );
+			}
+			
+			sb.append( prefix );
+		}
+		
+		sb.append( ")" );
+		
+		functionPrefixPattern = Pattern.compile( sb.toString() );
+	}
+	
+	public static Function getFunction(String url)
+	{
+		Matcher matchPrefix = functionPrefixPattern.matcher( url );
+		
+		if (!matchPrefix.find())
+		{
+			System.out.println( url );
+			System.out.println( functionPrefixPattern.pattern() );
+			
+			return null;
+		}
+		
+		List<Function> functions = functionPrefixMap.get( matchPrefix.group() );
+		
+		if (functions.size() == 1)
+		{
+			return functions.get( 0 );
+		}
+		
+		for (Function f : functions)
+		{
+			Matcher matchFull = f.getAction().matcher( url );
+			
+			if (matchFull.matches())
+			{
+				return f;
+			}
+		}
+		
+		return null;
+	}
+	
+
 	public static List<Function> getFunctions()
 	{
 		return functions;
 	}
 	
-	protected static void setInvocation(Invocation invocation)
+	protected static Invocation newInvocation()
 	{
+		Invocation invocation = new Invocation();
+		
 	    invocationLocal.set( invocation );
+	    
+	    return invocation;
+	}
+	
+	protected static void clearInvocation()
+	{
+		invocationLocal.remove();
 	}
 	
 	public static Invocation getInvocation()
@@ -181,9 +282,14 @@ public class Jayjax
     	listenerList.remove( listener );
     }
     
-    public static void notifyMessage(JayjaxMessage message, Throwable e)
+    public static void notifyMessage(JayjaxMessage message, Throwable e) throws JayjaxException
     {
     	Invocation invocation = getInvocation();
+    	
+    	if (listenerList.isEmpty())
+    	{
+    		throw new RuntimeException( message.name(), e );
+    	}
     	
 		for (JayjaxListener listener : listenerList)
     	{
