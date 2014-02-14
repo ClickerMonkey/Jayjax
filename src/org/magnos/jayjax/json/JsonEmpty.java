@@ -49,6 +49,12 @@ public class JsonEmpty implements JsonValue
 	{
 		return Json.EMPTY;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return toJson();
+	}
 
 	@Override
 	public void write( JsonWriter out ) throws IOException

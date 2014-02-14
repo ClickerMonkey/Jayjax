@@ -78,6 +78,12 @@ public class JsonBoolean implements JsonValue
 	{
 		return value ? Json.TRUE : Json.FALSE;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return toJson();
+	}
 
 	@Override
 	public void write( JsonWriter out ) throws IOException

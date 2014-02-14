@@ -290,6 +290,12 @@ public class JsonArray implements JsonValue
 	{
 		return Json.toString( this );
 	}
+	
+	@Override
+	public String toString()
+	{
+		return toJson();
+	}
 
 	@Override
 	public void write( JsonWriter out ) throws IOException

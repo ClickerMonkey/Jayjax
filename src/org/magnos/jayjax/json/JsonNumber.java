@@ -86,6 +86,12 @@ public class JsonNumber implements JsonValue
 	{
 		return (value == null ? Json.NULL : value.toString());
 	}
+	
+	@Override
+	public String toString()
+	{
+		return toJson();
+	}
 
 	@Override
 	public void write( JsonWriter out ) throws IOException
