@@ -108,3 +108,4 @@ public class MyController {
   - What to do about circular references
 - Performance
   - Stress Test
+- Add JSON-RPC server over TCP and HTTP
