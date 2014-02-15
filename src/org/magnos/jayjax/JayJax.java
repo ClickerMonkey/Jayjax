@@ -226,7 +226,7 @@ public class Jayjax
 		return functions;
 	}
 	
-	protected static Invocation newInvocation()
+	public static Invocation newInvocation()
 	{
 		Invocation invocation = new Invocation();
 		
@@ -235,7 +235,7 @@ public class Jayjax
 	    return invocation;
 	}
 	
-	protected static void clearInvocation()
+	public static void clearInvocation()
 	{
 		invocationLocal.remove();
 	}

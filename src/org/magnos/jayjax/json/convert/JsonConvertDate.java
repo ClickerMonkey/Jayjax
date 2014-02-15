@@ -116,6 +116,7 @@ public class JsonConvertDate
 	private static String find(Pattern p, int group, String x, String missingValue) 
 	{
 		Matcher m = p.matcher( x );
+		
 		return m.find() ? m.group(group) : missingValue;
 	}
 	
