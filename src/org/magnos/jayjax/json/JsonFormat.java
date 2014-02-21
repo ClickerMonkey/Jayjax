@@ -24,17 +24,7 @@ import org.magnos.jayjax.io.CharacterReader;
 
 
 /**
- * A format for loading {@link JsonValue} from JS or JSON files.
- * 
- * <h2>Extensions</h2>
- * <ul>
- * <li>JSON/JS - JSON File</li>
- * </ul>
- * 
- * <h2>Request Types<h2>
- * <ul>
- * <li>{@link org.magnos.jayjax.io.json.asset.json.JsonValue}</li>
- * </ul>
+ * A format for loading {@link JsonValue} from a CharacterReader.
  * 
  * @author Philip Diffenderfer
  * 

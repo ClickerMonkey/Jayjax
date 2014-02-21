@@ -55,15 +55,39 @@ public class Json
     private static final int ASCII_MAX = 128;
     private static final JsonFormat format = new JsonFormat();
 
+    /**
+     * Returns the JsonValue for the data contained in the given {@link String}.
+     * 
+     * @param x
+     *        The String to parse for JSON data.
+     * @return The parsed {@link JsonValue} implementation or null if the data
+     *         was invalid.
+     * @throws IOException
+     *         An error occurred parsing the JSON data.
+     */
     public static JsonValue valueOf( String x ) throws IOException
     {
         return format.readValueFromStream( CharacterReader.forString( x ) );
     }
 
+    /**
+     * Returns a JsonValue of a specified type for the data contained in the
+     * given {@link String}.
+     * 
+     * @param x
+     *        The String to parse for JSON data.
+     * @param expectedType
+     *        The expected {@link JsonValue} implementation.
+     * @return The parsed {@link JsonValue} implementation or null if the data
+     *         was invalid.
+     * @throws IOException
+     *         An error occurred parsing the JSON data.
+     * @throws ClassCastException
+     *         The expected type does not match the actual type parsed.
+     */
     public static <J extends JsonValue> J valueOf( String x, Class<J> expectedType ) throws IOException
     {
         return (J)format.readValueFromStream( CharacterReader.forString( x ) );
-
     }
 
     public static JsonValue valueOf( InputStream in ) throws IOException
@@ -99,7 +123,7 @@ public class Json
     public static String toString( JsonValue value )
     {
         StringBuilder out = new StringBuilder();
-        
+
         try
         {
             value.write( JsonWriter.forAppender( out ) );
@@ -108,10 +132,20 @@ public class Json
         {
             return null;
         }
-        
+
         return out.toString();
     }
 
+    /**
+     * Encodes the given {@link CharSequence} as a JSON string data type. This
+     * converts characters like double quotes, tabs, newline, to their escaped
+     * alternatives. This also converts Unicode characters into it's encoded
+     * alternative.
+     * 
+     * @param chars
+     *        The {@link CharSequence} to encode.
+     * @return The encoded {@link CharSequence} as a {@link String}.
+     */
     public static String encode( CharSequence chars )
     {
         StringBuilder out = new StringBuilder();
@@ -159,12 +193,27 @@ public class Json
         return out.toString();
     }
 
+    /**
+     * Converts the integer into the hex character equivalent.
+     * 
+     * @param b
+     *        The integer to convert into a hex character.
+     * @return The resulting hex character.
+     */
     private static char toHex( int b )
     {
         return HEX[b & 0xF];
     }
-    
-    public static String quote(String x)
+
+    /**
+     * Surrounds the given {@link String} by the quotes used in the JSON string
+     * data type.
+     * 
+     * @param x
+     *        The {@link String} to quote.
+     * @return The quoted {@link String}.
+     */
+    public static String quote( String x )
     {
         return (x == null ? NULL : STRING_START + x + STRING_END);
     }
